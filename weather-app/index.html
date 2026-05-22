@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A state-of-the-art glassmorphic Weather Dashboard for laptops and PCs featuring full API integration, dynamic canvas weather effects, hourly predictions, air quality monitoring, and saved locations.">
+    <title>Weather ForeCasts | Interactive Widescreen Dashboard</title>
+
+    <!-- Google Fonts: Instrument Serif (Editorial Serif), Outfit (Brand) & Inter (UI) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome 6.4.0 CSS for beautiful vector icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Bootstrap 5.3.0 CSS for advanced grid structures -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+    <!-- Custom Glassmorphic Stylesheet -->
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body class="weather-theme-clear-day">
+
+    <!-- Main Container -->
+    <div class="dashboard-wrapper container-fluid py-4 px-xl-5">
+        
+        <!-- Header Nav Row -->
+        <header class="dashboard-header mb-4">
+            <div class="row align-items-center g-3">
+                <div class="col-md-6 col-12 text-md-start text-center">
+                    <div class="brand-logo-container d-inline-flex align-items-center gap-2">
+                        <!-- Animated Brand SVG -->
+                        <div class="logo-icon-wrap">
+                            <svg class="brand-logo-svg" viewBox="0 0 64 64" width="42" height="42">
+                                <defs>
+                                    <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#fff" />
+                                        <stop offset="100%" stop-color="#cbd5e1" />
+                                    </linearGradient>
+                                    <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#fde047" />
+                                        <stop offset="100%" stop-color="#ea580c" />
+                                    </linearGradient>
+                                </defs>
+                                <!-- Sun behind cloud -->
+                                <circle cx="40" cy="24" r="12" fill="url(#sunGrad)" />
+                                <!-- Sunbeams -->
+                                <path d="M 40 6 L 40 10 M 40 38 L 40 42 M 22 24 L 26 24 M 54 24 L 58 24 M 29 13 L 32 16 M 48 32 L 51 35 M 29 35 L 32 32 M 48 13 L 51 16" stroke="#ea580c" stroke-width="2" stroke-linecap="round" />
+                                <!-- Fluffy Cloud -->
+                                <path d="M18 42 a 10 10 0 0 1 10 -10 a 12 12 0 0 1 20 -2 a 8 8 0 0 1 6 12 a 8 8 0 0 1 -8 8 H 18 a 10 10 0 0 1 0 -20 z" fill="url(#cloudGrad)" filter="drop-shadow(0px 4px 6px rgba(0,0,0,0.15))" />
+                            </svg>
+                        </div>
+                        <h1 class="logo-text m-0">Weather <span class="logo-accent">ForeCasts</span></h1>
+                    </div>
+                </div>
+                <div class="col-md-6 col-12 d-flex flex-wrap justify-content-md-end justify-content-center align-items-center gap-3">
+                    <!-- Back to Portfolio link -->
+                    <a href="../index.html" class="glass-action-btn text-decoration-none" title="Back to Portfolio homepage">
+                        <i class="fa-solid fa-arrow-left me-1"></i>
+                        <span class="d-none d-sm-inline">Back to Portfolio</span>
+                        <span class="d-inline d-sm-none">Back</span>
+                    </a>
+                    <!-- Current GPS Geo button -->
+                    <button id="gps-trigger" class="glass-action-btn" title="Use current GPS location">
+                        <i class="fa-solid var(--gps-icon, fa-location-crosshairs)"></i>
+                        <span class="d-none d-sm-inline ms-1">Use Location</span>
+                    </button>
+                    <!-- Unit Switcher -->
+                    <div class="unit-toggle-group d-flex align-items-center">
+                        <button id="unit-c" class="unit-btn active">°C</button>
+                        <button id="unit-f" class="unit-btn">°F</button>
+                    </div>
+                    <!-- System Date/Time Display -->
+                    <div id="header-time-widget" class="header-widget-box">
+                        <i class="fa-regular fa-clock me-2"></i>
+                        <span id="live-time">Loading system clock...</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Responsive Layout -->
+        <main class="row g-4">
+            
+            <!-- COLUMN 1: CONTROLS & SAVED LOCATIONS (col-lg-3) -->
+            <section class="col-xl-3 col-lg-4 col-12">
+                <div class="d-flex flex-column gap-4 h-100">
+                    
+                    <!-- Search Widget Card -->
+                    <div class="glass-card flex-shrink-0">
+                        <div class="card-header-bar mb-3">
+                            <h2 class="card-section-title"><i class="fa-solid fa-magnifying-glass me-2 text-purple"></i>Search Location</h2>
+                        </div>
+                        <div class="search-form-wrap position-relative">
+                            <form id="weather-search-form" autocomplete="off">
+                                <div class="search-input-container">
+                                    <input type="text" id="city-search-input" placeholder="Type city (e.g. London, Paris)..." required>
+                                    <button type="submit" class="search-submit-btn" aria-label="Search">
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </form>
+                            <!-- Auto-suggest Geocoding dropdown list -->
+                            <div id="autocomplete-results" class="autocomplete-dropdown-menu d-none">
+                                <ul id="autocomplete-list" class="list-unstyled m-0">
+                                    <!-- suggestions injected dynamically -->
+                                </ul>
+                            </div>
+                        </div>
+                        <p class="search-sub-info mt-2 text-muted-custom">
+                            Search locations globally using physical address, city, or coordinates.
+                        </p>
+                    </div>
+
+                    <!-- Favorites Card -->
+                    <div class="glass-card flex-grow-1 d-flex flex-column overflow-hidden">
+                        <div class="card-header-bar mb-3 d-flex justify-content-between align-items-center">
+                            <h2 class="card-section-title"><i class="fa-solid fa-heart me-2 text-rose"></i>Saved Cities</h2>
+                            <span id="favorites-count" class="badge-custom">0</span>
+                        </div>
+                        <div id="favorites-list-container" class="favorites-scroll-wrapper flex-grow-1 overflow-auto pe-1">
+                            <ul id="favorites-list" class="list-unstyled m-0 d-flex flex-column gap-2">
+                                <!-- Saved cities items injected dynamically -->
+                                <li class="text-center py-4 text-muted-custom placeholder-text">
+                                    <i class="fa-regular fa-bookmark fs-2 mb-2 d-block opacity-50"></i>
+                                    No saved locations. Click the heart icon on a city to save it.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Developer Information/API Widget -->
+                    <div class="glass-card flex-shrink-0 p-3 developer-mini-card">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="api-status-dot active"></div>
+                            <div>
+                                <h4 class="mini-card-title m-0">Open-Meteo Satellite API</h4>
+                                <span class="mini-card-sub text-muted-custom">Status: Online & Rate-Limit Free</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- COLUMN 2: HERO WEATHER VIEW & HOURLY SLIDER (col-lg-5) -->
+            <section class="col-xl-5 col-lg-8 col-12">
+                <div class="d-flex flex-column gap-4 h-100">
+                                       <!-- Primary Hero Current Weather Card -->
+                    <div id="primary-weather-hero" class="glass-card current-hero-card position-relative overflow-hidden flex-grow-1 d-flex flex-column justify-content-between">
+                        
+                        <!-- Floating Heart Tag to Bookmark current city -->
+                        <button id="favorite-toggle-btn" class="favorite-heart-float" aria-label="Favorite this location">
+                            <i class="fa-regular fa-heart"></i>
+                        </button>
+
+                        <div class="hero-top-info position-relative z-index-2">
+                            <span class="continent-tag" id="continent-display">North America</span>
+                            <h2 class="city-title" id="city-name-display">New York</h2>
+                            <p class="country-subtitle" id="country-name-display">United States of America</p>
+                        </div>
+
+                        <!-- Editorial Weather Grid -->
+                        <div class="hero-editorial-grid flex-grow-1 d-flex flex-column justify-content-center my-3 position-relative z-index-2">
+                            <div class="row align-items-center g-3">
+                                <div class="col-7">
+                                    <div class="d-flex align-items-baseline">
+                                        <h3 class="hero-temp-val-large m-0" id="current-temp-val">--</h3>
+                                        <span class="hero-temp-unit-serif" id="current-temp-unit">°C</span>
+                                    </div>
+                                    <p class="feels-like-text mb-0 text-muted-custom">
+                                        Apparent Temp: <span id="apparent-temp-display" class="fw-semibold text-white">--°C</span>
+                                    </p>
+                                </div>
+                                <div class="col-5 text-end">
+                                    <div class="hero-large-icon-wrap">
+                                        <span id="hero-weather-icon" class="hero-weather-editorial-icon">🌧️</span>
+                                    </div>
+                                    <span class="hero-condition-desc" id="weather-desc-display">Moderate Rain</span>
+                                </div>
+                            </div>
+
+                            <!-- Editorial Weather Synopsis Box -->
+                            <div class="weather-synopsis-box mt-3 p-3" id="weather-synopsis-container">
+                                <span class="synopsis-label">Meteorological Synopsis</span>
+                                <p class="synopsis-text m-0" id="weather-synopsis-text">
+                                    Synchronizing atmospheric telemetry...
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Hero Main Stats Panel -->
+                        <div class="hero-bottom-stats position-relative z-index-2 pt-3 border-top-glass">
+                            <!-- Quick highlights grids -->
+                            <div class="row g-2">
+                                <div class="col-3">
+                                    <div class="mini-highlight-box">
+                                        <span class="lbl">Max Temp</span>
+                                        <span class="val" id="day-max-temp-display">--°C</span>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="mini-highlight-box">
+                                        <span class="lbl">Min Temp</span>
+                                        <span class="val" id="day-min-temp-display">--°C</span>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="mini-highlight-box">
+                                        <span class="lbl">Precip.</span>
+                                        <span class="val" id="day-precip-display">0.0 mm</span>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="mini-highlight-box">
+                                        <span class="lbl">Humidity</span>
+                                        <span class="val" id="day-humidity-display">--%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Hourly Weather Forecast Horizontal List -->
+                    <div class="glass-card flex-shrink-0 overflow-hidden d-flex flex-column">
+                        <div class="card-header-bar mb-3">
+                            <h2 class="card-section-title"><i class="fa-regular fa-clock me-2 text-yellow"></i>Hourly Forecast (24 Hours)</h2>
+                        </div>
+                        <div class="hourly-forecast-scroll-wrap overflow-auto pb-2 flex-grow-1">
+                            <div class="d-flex gap-3" id="hourly-list-container">
+                                <!-- 24 hourly columns injected dynamically -->
+                                <div class="col text-center py-4 text-muted-custom w-100">
+                                    Loading hourly coordinates...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- COLUMN 3: 7-DAY FORECAST, CHART & DETAILED METRICS (col-lg-4) -->
+            <section class="col-xl-4 col-12">
+                <div class="d-flex flex-column gap-4">
+                    
+                    <!-- 7-Day Forecast vertical rows -->
+                    <div class="glass-card">
+                        <div class="card-header-bar mb-3">
+                            <h2 class="card-section-title"><i class="fa-regular fa-calendar-days me-2 text-rose"></i>7-Day Forecasts</h2>
+                        </div>
+                        <div class="7day-scroll-wrap overflow-hidden">
+                            <div class="d-flex flex-column gap-2" id="daily-forecast-rows">
+                                <!-- 7 daily columns injected dynamically -->
+                                <div class="text-center py-4 text-muted-custom">
+                                    Gathering daily parameters...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Precipitation probabilities Chart Card -->
+                    <div class="glass-card">
+                        <div class="card-header-bar mb-2 d-flex justify-content-between align-items-center">
+                            <h2 class="card-section-title">
+                                <i class="fa-solid fa-cloud-umbrella me-2 text-sky"></i>Rain Probability (12H)
+                            </h2>
+                            <span class="chart-tag" id="chart-peak-display">Peak: 0%</span>
+                        </div>
+                        <div class="chart-container-wrap position-relative" style="height: 120px; width: 100%;">
+                            <canvas id="precipitation-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Weather Metrics Grid (2x2 Grid) -->
+                    <div class="row g-3">
+                        
+                        <!-- Metric 1: Air Quality Gauge -->
+                        <div class="col-sm-6 col-12">
+                            <div class="glass-card h-100 d-flex flex-column justify-content-between p-3 position-relative">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="metric-label text-muted-custom">Air Quality</span>
+                                    <i class="fa-solid fa-wind text-green opacity-75"></i>
+                                </div>
+                                <div class="text-center py-2">
+                                    <span class="metric-big-val" id="aqi-display">--</span>
+                                    <p class="aqi-risk-lbl m-0 font-outfit" id="aqi-risk-display">Loading...</p>
+                                </div>
+                                <div class="metric-mini-details mt-1 border-top-glass pt-2">
+                                    <div class="d-flex justify-content-between fs-12">
+                                        <span>PM2.5: <strong class="text-white" id="pm25-display">--</strong></span>
+                                        <span>PM10: <strong class="text-white" id="pm10-display">--</strong></span>
+                                    </div>
+                                    <p class="aqi-tip-desc fs-11 m-0 mt-1 opacity-75 line-clamp-2" id="aqi-tip-display">
+                                        AQI represents overall respiratory health index risk.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Metric 2: UV Index Gauge -->
+                        <div class="col-sm-6 col-12">
+                            <div class="glass-card h-100 d-flex flex-column justify-content-between p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="metric-label text-muted-custom">UV Index</span>
+                                    <i class="fa-solid fa-sun text-yellow opacity-75"></i>
+                                </div>
+                                <div class="text-center py-2">
+                                    <span class="metric-big-val" id="uv-display">--</span>
+                                    <p class="uv-risk-lbl m-0 font-outfit" id="uv-risk-display">Loading...</p>
+                                </div>
+                                <div class="metric-mini-details mt-1 border-top-glass pt-2">
+                                    <div class="progress-bar-thin bg-glass mb-2">
+                                        <div id="uv-bar-fill" class="progress-bar-fill bg-gradient-uv" style="width: 0%"></div>
+                                    </div>
+                                    <p class="uv-tip-desc fs-11 m-0 opacity-75 line-clamp-2" id="uv-tip-display">
+                                        UV index monitors solar radiation levels. Protect skin accordingly.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Metric 3: Sun Cycle (Sunrise/Sunset path) -->
+                        <div class="col-sm-6 col-12">
+                            <div class="glass-card h-100 d-flex flex-column justify-content-between p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="metric-label text-muted-custom">Sun Cycle</span>
+                                    <i class="fa-solid fa-hourglass-half text-amber opacity-75"></i>
+                                </div>
+                                
+                                <!-- Arc Path Widget -->
+                                <div class="sun-arc-widget-container text-center my-1 position-relative">
+                                    <svg class="sun-arc-svg" viewBox="0 0 100 50" width="100%" height="45">
+                                        <!-- The solar parabolic path -->
+                                        <path d="M 5,45 A 40,40 0 0,1 95,45" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-dasharray="3,3" />
+                                        <!-- Completed path -->
+                                        <path id="sun-arc-progress" d="M 5,45 A 40,40 0 0,1 5,45" fill="none" stroke="#f59e0b" stroke-width="2" />
+                                        <!-- The sun indicator -->
+                                        <circle id="sun-arc-node" cx="5" cy="45" r="3.5" fill="#fbbf24" stroke="#f59e0b" stroke-width="1" />
+                                        <!-- Ground base line -->
+                                        <line x1="0" y1="45" x2="100" y2="45" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+                                    </svg>
+                                </div>
+
+                                <div class="metric-mini-details mt-1 border-top-glass pt-2">
+                                    <div class="d-flex justify-content-between fs-11 text-muted-custom mb-1">
+                                        <span><i class="fa-solid fa-circle-arrow-up text-amber"></i> Sunrise: <strong class="text-white" id="sunrise-display">--:--</strong></span>
+                                        <span><i class="fa-solid fa-circle-arrow-down text-rose"></i> Sunset: <strong class="text-white" id="sunset-display">--:--</strong></span>
+                                    </div>
+                                    <p class="daylight-hours-desc fs-11 m-0 text-center text-white" id="daylight-display">
+                                        Calculating solar path...
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Metric 4: Wind & Compass Widget -->
+                        <div class="col-sm-6 col-12">
+                            <div class="glass-card h-100 d-flex flex-column justify-content-between p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="metric-label text-muted-custom">Wind & Direction</span>
+                                    <i class="fa-solid fa-compass text-sky opacity-75"></i>
+                                </div>
+                                <div class="text-center py-1 d-flex align-items-center justify-content-center gap-3">
+                                    <div>
+                                        <span class="metric-big-val" id="wind-speed-display" style="font-size: 1.8rem;">--</span>
+                                        <span class="fs-12 text-muted-custom block" id="wind-unit-display">km/h</span>
+                                    </div>
+                                    
+                                    <!-- Animated Wind Compass icon -->
+                                    <div class="compass-widget-wrap">
+                                        <svg viewBox="0 0 40 40" width="40" height="40">
+                                            <circle cx="20" cy="20" r="18" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+                                            <text x="20" y="8" font-size="6" font-family="Outfit" font-weight="bold" fill="rgba(255,255,255,0.5)" text-anchor="middle">N</text>
+                                            <text x="20" y="36" font-size="6" font-family="Outfit" font-weight="bold" fill="rgba(255,255,255,0.3)" text-anchor="middle">S</text>
+                                            <!-- Rotating Compass arrow pointer -->
+                                            <g id="compass-pointer-arrow" style="transform-origin: 20px 20px; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                                                <polygon points="20,10 24,20 20,17 16,20" fill="#ef4444" stroke="#7f1d1d" stroke-width="0.5" />
+                                                <polygon points="20,30 24,20 20,23 16,20" fill="rgba(255,255,255,0.3)" />
+                                            </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="metric-mini-details mt-1 border-top-glass pt-2">
+                                    <div class="d-flex justify-content-between fs-11">
+                                        <span>Heading: <strong class="text-white" id="wind-deg-display">--°</strong></span>
+                                        <span>Pressure: <strong class="text-white" id="pressure-display">-- hPa</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-5 mb-3 text-center border-top-glass pt-3 pb-2 text-muted-custom fs-13">
+            <p class="m-0">
+                Weather ForeCasts Dashboard &copy; 2026. Made with <i class="fa-solid fa-heart text-rose animate-pulse"></i> by Arindam. 
+                Satellite geolocations dynamically managed. 100% Industry Standard Compliance.
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Chart.js CDN for beautiful interactive graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom Logic Script -->
+    <script src="./js/app.js"></script>
+</body>
+</html>

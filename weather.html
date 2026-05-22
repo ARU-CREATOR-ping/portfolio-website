@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Neo-Brutalist Interactive Weather App.">
+    <title>Interactive Weather Dashboard | Arindam</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3.0 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+    <!-- FontAwesome 4.7.0 for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Custom Neo-Brutalist Stylesheet -->
+    <link rel="stylesheet" href="./css/style.css">
+
+    <style>
+        /* Dedicated weather page sub-styles */
+        .weather-container {
+            background-color: var(--color-white);
+            border: var(--border-thick);
+            border-radius: var(--radius-large);
+            box-shadow: var(--shadow-flat);
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: var(--transition-playful);
+        }
+
+        .weather-container:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: var(--shadow-flat-large);
+        }
+
+        .weather-badge {
+            background-color: var(--color-primary);
+            border: var(--border-thick);
+            border-radius: var(--radius-full);
+            padding: 6px 18px;
+            box-shadow: var(--shadow-flat-small);
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-black);
+        }
+
+        .weather-hero-card {
+            background-color: #d1fae5; /* Mint green default background */
+            border: var(--border-thick);
+            border-radius: var(--radius-large);
+            padding: 40px;
+            position: relative;
+            overflow: visible;
+            box-shadow: var(--shadow-flat);
+            transition: var(--transition-playful);
+        }
+
+        .weather-hero-card:hover {
+            transform: scale(1.01) rotate(0.5deg);
+            box-shadow: var(--shadow-flat-large);
+        }
+
+        /* Large custom weather sticker */
+        .weather-sticker {
+            position: absolute;
+            top: -20px;
+            right: 40px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: #fef08a; /* Bright yellow */
+            border: var(--border-thick);
+            box-shadow: var(--shadow-flat-small);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            animation: floatAnimation 4s ease-in-out infinite alternate;
+            z-index: 5;
+        }
+
+        @keyframes floatAnimation {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-12px) rotate(10deg); }
+        }
+
+        .weather-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .metric-box {
+            background-color: var(--color-white);
+            border: var(--border-thin);
+            border-radius: var(--radius-medium);
+            padding: 15px;
+            text-align: center;
+            box-shadow: var(--shadow-flat-small);
+            transition: var(--transition-playful);
+        }
+
+        .metric-box:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 4px 4px 0px var(--color-black);
+            background-color: var(--bg-inner);
+        }
+
+        .forecast-card {
+            background-color: var(--color-white);
+            border: var(--border-thick);
+            border-radius: var(--radius-medium);
+            padding: 20px 15px;
+            text-align: center;
+            box-shadow: var(--shadow-flat-small);
+            transition: var(--transition-playful);
+        }
+
+        .forecast-card:hover {
+            transform: translate(-4px, -4px) rotate(-1deg);
+            box-shadow: var(--shadow-flat);
+            background-color: #fca5a5; /* anime red-pink on hover */
+        }
+
+        .search-btn {
+            background-color: var(--color-primary);
+            border: var(--border-thick);
+            border-radius: var(--radius-medium);
+            box-shadow: var(--shadow-flat-small);
+            font-weight: 800;
+            padding: 12px 25px;
+            transition: var(--transition-playful);
+            cursor: pointer;
+        }
+
+        .search-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 6px 6px 0px var(--color-black);
+            background-color: var(--bg-outer);
+        }
+
+        .geo-btn {
+            background-color: var(--color-secondary);
+            border: var(--border-thick);
+            border-radius: var(--radius-medium);
+            box-shadow: var(--shadow-flat-small);
+            color: var(--color-white) !important;
+            font-weight: 800;
+            padding: 12px 20px;
+            transition: var(--transition-playful);
+            cursor: pointer;
+        }
+
+        .geo-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 6px 6px 0px var(--color-black);
+            background-color: var(--color-accent);
+        }
+
+        .temp-toggle {
+            cursor: pointer;
+            text-decoration: underline;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .back-nav-badge {
+            background-color: var(--color-secondary);
+            border: var(--border-thick);
+            border-radius: var(--radius-medium);
+            padding: 8px 20px;
+            box-shadow: var(--shadow-flat-small);
+            font-weight: 800;
+            color: var(--color-white) !important;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: var(--transition-playful);
+        }
+
+        .back-nav-badge:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: var(--shadow-flat);
+            background-color: var(--color-primary);
+            color: var(--color-black) !important;
+        }
+
+        .error-sticker {
+            background-color: #f87171 !important; /* light red */
+        }
+    </style>
+</head>
+
+<body>
+<div class="body">
+
+    <!-- Top Navigation Header -->
+    <nav class="menu navbar navbar-expand-md navbar-light rounded" aria-label="Main Navigation">
+      <div class="container-fluid">
+        <a href="./index.html" class="back-nav-badge text-decoration-none">
+          <i class="fa fa-arrow-left"></i>
+          <span>Back to Portfolio</span>
+        </a>
+        
+        <span class="navbar-brand py-0 logo-badge ms-auto">
+          <span class="logo-dot"></span>
+          <span class="logo-text">Weather WebApp</span>
+        </span>
+      </div>
+    </nav>
+
+    <!-- Main Dashboard Section -->
+    <div class="container-fluid px-4 py-3">
+        
+        <!-- Search & Control Row -->
+        <div class="weather-container mb-4">
+            <div class="row align-items-center g-3">
+                <div class="col-md-7">
+                    <h2 class="fw-bold mb-2">Search the Weather</h2>
+                    <p class="mb-0 text-muted">Type any city in the world to get real-time meteorological metrics instantly.</p>
+                </div>
+                <div class="col-md-5 text-md-end">
+                    <button id="geoLocateBtn" class="geo-btn">
+                        <i class="fa fa-map-marker"></i> Use Current Location
+                    </button>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-12">
+                    <form id="searchForm" class="d-flex flex-column flex-md-row gap-3">
+                        <input type="text" id="cityInput" placeholder="Enter city name (e.g. New Delhi, London, Tokyo)..." required style="margin: 0; flex-grow: 1;">
+                        <button type="submit" class="search-btn">
+                            <i class="fa fa-search"></i> Get Forecast
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weather Status Row -->
+        <div class="row g-4 mb-4">
+            
+            <!-- Current Weather Hero Card -->
+            <div class="col-lg-7">
+                <div id="weatherHeroCard" class="weather-hero-card h-100">
+                    <!-- Animated Bouncy Weather Condition Sticker -->
+                    <div id="conditionSticker" class="weather-sticker">☀️</div>
+                    
+                    <div class="weather-badge mb-3">
+                        <i class="fa fa-clock-o"></i>
+                        <span id="currentTime">Loading...</span>
+                    </div>
+                    
+                    <h1 id="cityName" class="fw-bold display-4 mb-1">New Delhi</h1>
+                    <p id="countryName" class="fs-4 fw-bold text-muted mb-4">India</p>
+                    
+                    <div class="d-flex align-items-baseline mb-2">
+                        <span id="temperatureVal" class="display-1 fw-extrabold mb-0">--</span>
+                        <span class="display-3 fw-bold mb-0">°<span id="tempUnit">C</span></span>
+                        <span id="unitToggle" class="temp-toggle text-dark fs-5">Toggle °F</span>
+                    </div>
+                    
+                    <p id="weatherDescription" class="fs-4 fw-bold mb-4">Clear Sky</p>
+                    
+                    <!-- Metrics Row -->
+                    <div class="weather-metrics-grid">
+                        <div class="metric-box">
+                            <i class="fa fa-thermometer-half fs-4 mb-2 text-danger"></i>
+                            <p class="mb-0 text-muted fs-6">Feels Like</p>
+                            <h4 id="feelsLikeVal" class="fw-bold mb-0">--°C</h4>
+                        </div>
+                        <div class="metric-box">
+                            <i class="fa fa-tint fs-4 mb-2 text-primary"></i>
+                            <p class="mb-0 text-muted fs-6">Humidity</p>
+                            <h4 id="humidityVal" class="fw-bold mb-0">--%</h4>
+                        </div>
+                        <div class="metric-box">
+                            <i class="fa fa-wind fs-4 mb-2 text-secondary"></i>
+                            <p class="mb-0 text-muted fs-6">Wind Speed</p>
+                            <h4 id="windSpeedVal" class="fw-bold mb-0">-- km/h</h4>
+                        </div>
+                        <div class="metric-box">
+                            <i class="fa fa-sun-o fs-4 mb-2 text-warning"></i>
+                            <p class="mb-0 text-muted fs-6">UV Index</p>
+                            <h4 id="uvIndexVal" class="fw-bold mb-0">--</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Weather Insights & Sticker -->
+            <div class="col-lg-5">
+                <div class="weather-container h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <h3 class="fw-bold mb-3"><i class="fa fa-lightbulb-o text-warning"></i> Weather Insights</h3>
+                        <div id="weatherInsightText" class="paragraph mb-4">
+                            Fetching the latest weather data to give you personalized developer insights!
+                        </div>
+                    </div>
+                    
+                    <div class="about-music-player bg-white border border-thick p-3 text-center" style="max-width: 100%; margin: 0;">
+                        <h5 class="fw-bold mb-2">Weather Condition Tip</h5>
+                        <p id="weatherTipText" class="mb-0 fs-6">
+                            ☀️ Perfect day to grab a coffee, code outside, or take a short walk in the fresh air!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 7-Day Forecast Section -->
+        <div class="weather-container mb-4">
+            <h2 class="fw-bold mb-4 text-center"><i class="fa fa-calendar-check-o"></i> 7-Day Forecast</h2>
+            <div id="forecastGrid" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-7 g-3">
+                <!-- Forecast Cards will be dynamically inserted here -->
+                <div class="col text-center">Loading forecast...</div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Bootstrap 5.3.0 Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+
+<script>
+    // State management
+    let currentTempC = 0;
+    let currentFeelsC = 0;
+    let isCelsius = true;
+    let forecastData = [];
+
+    // Weather code mapping (WMO weather codes to Emojis and Descriptions)
+    function mapWeatherCode(code) {
+        const mapping = {
+            0: { emoji: '☀️', desc: 'Sunny / Clear Sky', bg: '#fef3c7', tip: 'Bright and beautiful! Perfect day to step outside and write some clean code.' },
+            1: { emoji: '🌤️', desc: 'Mainly Clear', bg: '#fef3c7', tip: 'Pleasant weather. Take a quick break to refresh your eyes!' },
+            2: { emoji: '⛅', desc: 'Partly Cloudy', bg: '#f1f5f9', tip: 'Mildly cloudy. Great day for concentration and productivity.' },
+            3: { emoji: '☁️', desc: 'Overcast', bg: '#e2e8f0', tip: 'Cloudy skies. Cozy up inside with a hot drink and push some commits.' },
+            45: { emoji: '🌫️', desc: 'Foggy', bg: '#cbd5e1', tip: 'Low visibility. Stay cozy indoors and debug those tricky logic bugs.' },
+            48: { emoji: '🌫️', desc: 'Depositing Rime Fog', bg: '#cbd5e1', tip: 'Chilly and foggy. Perfect time for deep focus coding.' },
+            51: { emoji: '🌧️', desc: 'Light Drizzle', bg: '#dbeafe', tip: 'A light shower. Put on some lo-fi beats and enjoy coding.' },
+            53: { emoji: '🌧️', desc: 'Moderate Drizzle', bg: '#dbeafe', tip: 'Rain is picking up. Stay dry and keep building amazing apps.' },
+            55: { emoji: '🌧️', desc: 'Dense Drizzle', bg: '#bfdbfe', tip: 'Steady drizzle outside. Perfect weather to stay tucked in and study.' },
+            61: { emoji: '🌧️', desc: 'Slight Rain', bg: '#bfdbfe', tip: 'Light rainfall. Grab a warm tea and tackle that backlog!' },
+            63: { emoji: '🌧️', desc: 'Moderate Rain', bg: '#93c5fd', tip: 'Steady rain outside. Listen to the rain sounds and debug.' },
+            65: { emoji: '🌧️', desc: 'Heavy Rain', bg: '#60a5fa', tip: 'Torrential downpour! Stay indoors and keep warm.' },
+            71: { emoji: '❄️', desc: 'Slight Snowfall', bg: '#eff6ff', tip: 'Winter magic! Cozy up, watch the snow, and code.' },
+            73: { emoji: '❄️', desc: 'Moderate Snowfall', bg: '#eff6ff', tip: 'Beautiful winter scenery. Make a warm cocoa!' },
+            75: { emoji: '❄️', desc: 'Heavy Snowfall', bg: '#eff6ff', tip: 'Snow storm! Stay warm and enjoy a productive indoor sprint.' },
+            80: { emoji: '🌧️', desc: 'Slight Rain Showers', bg: '#dbeafe', tip: 'Passing rain. Keep an eye out for a rainbow!' },
+            81: { emoji: '🌧️', desc: 'Moderate Rain Showers', bg: '#bfdbfe', tip: 'Heavier rain showers. Keep building digital masterpieces.' },
+            82: { emoji: '🌧️', desc: 'Violent Rain Showers', bg: '#60a5fa', tip: 'Heavy storm! Make sure everything is backed up in Git.' },
+            95: { emoji: '⛈️', desc: 'Thunderstorm', bg: '#fed7aa', tip: 'Stormy skies! Dramatic lighting outside, stay safe and dry inside.' },
+            96: { emoji: '⛈️', desc: 'Thunderstorm with Hail', bg: '#fed7aa', tip: 'Hail and storm. The perfect excuse to stay in and code all night.' },
+            99: { emoji: '⛈️', desc: 'Heavy Thunderstorm', bg: '#ffedd5', tip: 'Heavy storm warning! Keep safe and enjoy a deep-focus sprint.' }
+        };
+        return mapping[code] || { emoji: '🌡️', desc: 'Unknown Conditions', bg: '#fff6e7', tip: 'Weather metrics fetched. Check it out and plan your developer day accordingly!' };
+    }
+
+    // Geocoding Search
+    async function searchCity(cityName) {
+        try {
+            document.getElementById('cityName').innerText = "Searching...";
+            document.getElementById('countryName').innerText = "Connecting to Satellite...";
+            
+            const geocodeUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`;
+            const response = await fetch(geocodeUrl);
+            const data = await response.json();
+
+            if (!data.results || data.results.length === 0) {
+                showError("City Not Found!");
+                return;
+            }
+
+            const city = data.results[0];
+            fetchWeather(city.latitude, city.longitude, city.name, city.country || city.admin1 || '');
+        } catch (error) {
+            console.error("Geocoding Error:", error);
+            showError("Network/API Error!");
+        }
+    }
+
+    // Fetch Weather Data
+    async function fetchWeather(lat, lon, name, country) {
+        try {
+            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max&timezone=auto`;
+            const response = await fetch(weatherUrl);
+            const data = await response.json();
+
+            // Set current state
+            currentTempC = data.current.temperature_2m;
+            currentFeelsC = data.current.apparent_temperature;
+            
+            // Map Weather details
+            const condition = mapWeatherCode(data.current.weather_code);
+
+            // Update UI
+            document.getElementById('cityName').innerText = name;
+            document.getElementById('countryName').innerText = country;
+            document.getElementById('weatherDescription').innerText = condition.desc;
+            document.getElementById('conditionSticker').innerText = condition.emoji;
+            document.getElementById('conditionSticker').classList.remove('error-sticker');
+            
+            // Set Dynamic Card Background Colors based on weather theme!
+            document.getElementById('weatherHeroCard').style.backgroundColor = condition.bg;
+
+            document.getElementById('humidityVal').innerText = `${data.current.relative_humidity_2m}%`;
+            document.getElementById('windSpeedVal').innerText = `${data.current.wind_speed_10m} km/h`;
+            
+            // Set UV Index (from daily array index 0)
+            const uv = data.daily.uv_index_max[0] || 0;
+            document.getElementById('uvIndexVal').innerText = uv;
+
+            // Set current time and date
+            const localDate = new Date();
+            document.getElementById('currentTime').innerText = localDate.toLocaleDateString('en-US', {
+                weekday: 'long', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+
+            // Set Insights & Tips
+            document.getElementById('weatherTipText').innerText = `${condition.emoji} ${condition.tip}`;
+            
+            let insightText = `Right now in **${name}**, it is **${currentTempC}°C** with **${condition.desc}**. `;
+            if (currentTempC > 30) {
+                insightText += "It's quite hot outside! Ensure your workstation is ventilated, stay hydrated, and maybe compile some lighter projects.";
+            } else if (currentTempC < 15) {
+                insightText += "It's a bit chilly! A warm drink and cozy sweaters are highly recommended for optimal coding velocity today.";
+            } else {
+                insightText += "The weather is absolute gold! Enjoy the beautiful day, and get ready to push some incredible updates.";
+            }
+            document.getElementById('weatherInsightText').innerHTML = insightText;
+
+            // Render temperatures
+            updateTempDisplay();
+
+            // Render Forecast Grid
+            renderForecast(data.daily);
+
+        } catch (error) {
+            console.error("Weather Fetch Error:", error);
+            showError("Error Fetching Data!");
+        }
+    }
+
+    // Render Forecast Grid
+    function renderForecast(daily) {
+        const grid = document.getElementById('forecastGrid');
+        grid.innerHTML = ''; // Clear
+
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(daily.time[i]);
+            const dayName = i === 0 ? 'Today' : days[date.getDay()];
+            const code = daily.weather_code[i];
+            const condition = mapWeatherCode(code);
+            
+            const maxTemp = isCelsius ? Math.round(daily.temperature_2m_max[i]) : Math.round((daily.temperature_2m_max[i] * 9/5) + 32);
+            const minTemp = isCelsius ? Math.round(daily.temperature_2m_min[i]) : Math.round((daily.temperature_2m_min[i] * 9/5) + 32);
+
+            const card = document.createElement('div');
+            card.className = 'col';
+            card.innerHTML = `
+                <div class="forecast-card h-100" style="background-color: ${i === 0 ? '#fef3c7' : 'var(--color-white)'}">
+                    <h5 class="fw-bold mb-2">${dayName}</h5>
+                    <div class="fs-1 mb-2">${condition.emoji}</div>
+                    <p class="mb-1 text-muted fs-6 fw-bold">${condition.desc.split('/')[0]}</p>
+                    <h5 class="fw-bold mb-0 text-dark">
+                        ${maxTemp}° <span class="fs-6 text-muted fw-normal">${minTemp}°</span>
+                    </h5>
+                </div>
+            `;
+            grid.appendChild(card);
+        }
+    }
+
+    // Update Temperatures in UI
+    function updateTempDisplay() {
+        const tVal = isCelsius ? Math.round(currentTempC) : Math.round((currentTempC * 9/5) + 32);
+        const fVal = isCelsius ? Math.round(currentFeelsC) : Math.round((currentFeelsC * 9/5) + 32);
+        const unit = isCelsius ? 'C' : 'F';
+
+        document.getElementById('temperatureVal').innerText = tVal;
+        document.getElementById('tempUnit').innerText = unit;
+        document.getElementById('feelsLikeVal').innerText = `${fVal}°${unit}`;
+    }
+
+    // Toggle units
+    document.getElementById('unitToggle').addEventListener('click', () => {
+        isCelsius = !isCelsius;
+        document.getElementById('unitToggle').innerText = isCelsius ? 'Toggle °F' : 'Toggle °C';
+        updateTempDisplay();
+        
+        // Re-request geolocated search or current city search info to re-render forecast cards
+        const currentCity = document.getElementById('cityName').innerText;
+        if (currentCity && currentCity !== 'Searching...' && currentCity !== 'Error!') {
+            searchCity(currentCity);
+        }
+    });
+
+    // Show Error UI
+    function showError(msg) {
+        document.getElementById('cityName').innerText = "Error!";
+        document.getElementById('countryName').innerText = msg;
+        document.getElementById('weatherDescription').innerText = "Please verify spelling or connection.";
+        document.getElementById('conditionSticker').innerText = "⚠️";
+        document.getElementById('conditionSticker').classList.add('error-sticker');
+        document.getElementById('weatherHeroCard').style.backgroundColor = '#fecdd3'; // Soft error pink
+        
+        document.getElementById('temperatureVal').innerText = "--";
+        document.getElementById('humidityVal').innerText = "--%";
+        document.getElementById('windSpeedVal').innerText = "-- km/h";
+        document.getElementById('uvIndexVal').innerText = "--";
+        document.getElementById('feelsLikeVal').innerText = "--°C";
+    }
+
+    // Event Listeners
+    document.getElementById('searchForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const city = document.getElementById('cityInput').value.trim();
+        if (city) {
+            searchCity(city);
+        }
+    });
+
+    // Geolocation API support
+    document.getElementById('geoLocateBtn').addEventListener('click', () => {
+        if (navigator.geolocation) {
+            document.getElementById('cityName').innerText = "Locating...";
+            document.getElementById('countryName').innerText = "Requesting satellite link...";
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    fetchWeather(lat, lon, "Your Location", "Local Coordinates");
+                },
+                (error) => {
+                    console.error("Location retrieval rejected:", error);
+                    showError("Access Denied/GPS Error");
+                }
+            );
+        } else {
+            showError("Geolocation unsupported");
+        }
+    });
+
+    // Initialize with a default city (e.g. New Delhi)
+    window.addEventListener('load', () => {
+        searchCity("New Delhi");
+    });
+</script>
+</body>
+</html>
