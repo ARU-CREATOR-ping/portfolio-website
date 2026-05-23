@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuperHeroes DB - Registry Terminal</title>
+  
+  <!-- Premium Fonts: Space Grotesk for solid headings, Plus Jakarta Sans for elegant body copy -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome for layout icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Sleek Dark Stylesheet -->
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation & Editorial Header -->
+  <header class="terminal-header">
+    <div class="header-left">
+      <a href="../index.html" class="back-link">
+        <i class="fa-solid fa-arrow-left-long"></i> BACK TO PORTFOLIO
+      </a>
+    </div>
+    <div class="header-center">
+      <h1 class="brand-title">SUPERHEROES <span class="accent-glow">DB</span></h1>
+      <p class="brand-subtitle">METAHUMAN REGISTRY PORTAL</p>
+    </div>
+    <div class="header-right">
+      <button class="control-hud-btn" id="hud-favs-trigger">
+        <i class="fa-solid fa-bookmark"></i> BOOKMARKS <span class="fav-count-badge" id="fav-count">0</span>
+      </button>
+      <button class="control-hud-btn arena-glow-btn" id="hud-battle-trigger">
+        <i class="fa-solid fa-crosshairs"></i> BATTLE ARENA
+      </button>
+    </div>
+  </header>
+
+  <!-- Interactive Control Panel (HUD Filter Sorters) -->
+  <section class="hud-panel">
+    <div class="hud-wrapper">
+      
+      <!-- Search Input -->
+      <div class="hud-group hud-search-group">
+        <label for="search-input"><i class="fa-solid fa-magnifying-glass"></i> IDENTITY SCANNER</label>
+        <div class="input-container">
+          <input type="text" id="search-input" placeholder="Search by name or identity..." autocomplete="off">
+          <span class="scan-laser"></span>
+        </div>
+      </div>
+      
+      <!-- Publisher Filters -->
+      <div class="hud-group">
+        <label><i class="fa-solid fa-building-shield"></i> UNIVERSE</label>
+        <div class="hud-btn-group" id="filter-publisher">
+          <button class="hud-btn active" data-publisher="all">ALL</button>
+          <button class="hud-btn marvel-accent-btn" data-publisher="marvel">MARVEL</button>
+          <button class="hud-btn dc-accent-btn" data-publisher="dc">DC</button>
+        </div>
+      </div>
+      
+      <!-- Alignment Filters -->
+      <div class="hud-group">
+        <label><i class="fa-solid fa-yin-yang"></i> PROFILE ALIGNMENT</label>
+        <div class="hud-btn-group" id="filter-alignment">
+          <button class="hud-btn active" data-alignment="all">ALL</button>
+          <button class="hud-btn hero-accent-btn" data-alignment="good">HERO</button>
+          <button class="hud-btn villain-accent-btn" data-alignment="evil">VILLAIN</button>
+          <button class="hud-btn neutral-accent-btn" data-alignment="neutral">NEUTRAL</button>
+        </div>
+      </div>
+      
+      <!-- Sorting Dropdown -->
+      <div class="hud-group">
+        <label for="sort-select"><i class="fa-solid fa-arrow-down-up-lock"></i> SORT CALIBRATION</label>
+        <select id="sort-select" class="hud-select">
+          <option value="default">REGISTRY DEFAULT</option>
+          <option value="intelligence">INTELLIGENCE RATING</option>
+          <option value="strength">PHYSICAL STRENGTH</option>
+          <option value="speed">SPEED VELOCITY</option>
+          <option value="durability">DURABILITY LEVEL</option>
+          <option value="power">ENERGY OUTPUT</option>
+          <option value="combat">COMBAT CORE</option>
+        </select>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Registry Status Banner -->
+  <div class="hud-status-banner">
+    <div class="status-indicator">
+      <span class="pulse-dot"></span>
+      <span class="status-text" id="status-text">METAHUMAN DATABASE INSTALLED</span>
+    </div>
+  </div>
+
+  <!-- Primary Superheroes Grid Section -->
+  <main class="registry-container">
+    <div class="heroes-grid" id="heroes-grid">
+      <!-- Cards dynamically injected here -->
+    </div>
+  </main>
+
+  <!-- Slide-out Bookmarks Drawer -->
+  <div class="hud-drawer" id="favorites-drawer">
+    <div class="drawer-overlay" id="fav-drawer-overlay"></div>
+    <div class="drawer-panel">
+      <div class="drawer-header">
+        <h2><i class="fa-solid fa-bookmark text-yellow"></i> PERSISTED BOOKMARKS</h2>
+        <button class="drawer-close" id="hud-favs-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="drawer-body" id="fav-list-container">
+        <!-- Persistent bookmarks injected here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- High-Tech Character Details Modal -->
+  <div class="modal-overlay" id="detail-modal">
+    <div class="modal-backdrop" id="modal-close-backdrop"></div>
+    <div class="modal-panel" id="detail-modal-panel">
+      
+      <button class="modal-close-btn" id="modal-close-trigger"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div class="modal-container">
+        
+        <!-- Left Side: Profile Artwork -->
+        <div class="modal-profile-art" id="modal-profile-art-bg">
+          <div class="modal-art-overlay">
+            <span class="modal-pub-tag" id="modal-badge-publisher">PUBLISHER</span>
+            <div class="modal-identity">
+              <h2 id="modal-char-name">CHARACTER NAME</h2>
+              <h4 id="modal-real-name">Real Identity</h4>
+              <span class="modal-alignment-badge" id="modal-badge-alignment">ALIGNMENT</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right Side: Detailed telemetry tabs -->
+        <div class="modal-profile-data">
+          
+          <div class="modal-tabs">
+            <button class="tab-trigger active" data-tab="stats-tab"><i class="fa-solid fa-bolt-lightning"></i> POWER VALUES</button>
+            <button class="tab-trigger" data-tab="bio-tab"><i class="fa-solid fa-address-card"></i> BIOGRAPHY</button>
+            <button class="tab-trigger" data-tab="links-tab"><i class="fa-solid fa-diagram-project"></i> TEAM LINKS</button>
+          </div>
+          
+          <!-- Tab 1: Stats Ratings (Sleek Horizontal Bars) -->
+          <div class="tab-content active" id="stats-tab">
+            <div class="modal-stats-list">
+              
+              <div class="modal-stat-row">
+                <div class="modal-stat-header">
+                  <span class="modal-stat-label"><i class="fa-solid fa-brain"></i> INTELLIGENCE</span>
+                  <span class="modal-stat-value" id="val-intelligence">0</span>
+                </div>
+                <div class="modal-stat-bar-container">
+                  <div class="modal-stat-bar-fill fill-intelligence" id="bar-intelligence"></div>
+                </div>
+              </div>
+
+              <div class="modal-stat-row">
+                <div class="modal-stat-header">
+                  <span class="modal-stat-label"><i class="fa-solid fa-dumbbell"></i> STRENGTH</span>
+                  <span class="modal-stat-value" id="val-strength">0</span>
+                </div>
+                <div class="modal-stat-bar-container">
+                  <div class="modal-stat-bar-fill fill-strength" id="bar-strength"></div>
+                </div>
+              </div>
+
+              <div class="modal-stat-row">
+                <div class="modal-stat-header">
+                  <span class="modal-stat-label"><i class="fa-solid fa-gauge-high"></i> SPEED</span>
+                  <span class="modal-stat-value" id="val-speed">0</span>
+                </div>
+                <div class="modal-stat-bar-container">
+                  <div class="modal-stat-bar-fill fill-speed" id="bar-speed"></div>
+                </div>
+              </div>
+
+              <div class="modal-stat-row">
+                <div class="modal-stat-header">
+                  <span class="modal-stat-label"><i class="fa-solid fa-shield-halved"></i> DURABILITY</span>
+                  <span class="modal-stat-value" id="val-durability">0</span>
+                </div>
+                <div class="modal-stat-bar-container">
+                  <div class="modal-stat-bar-fill fill-durability" id="bar-durability"></div>
+                </div>
+              </div>
+
+              <div class="modal-stat-row">
+                <div class="modal-stat-header">
+                  <span class="modal-stat-label"><i class="fa-solid fa-bolt"></i> ENERGY OUTPUT</span>
+                  <span class="modal-stat-value" id="val-power">0</span>
+                </div>
+                <div class="modal-stat-bar-container">
+                  <div class="modal-stat-bar-fill fill-power" id="bar-power"></div>
+                </div>
+              </div>
+
+              <div class="modal-stat-row">
+                <div class="modal-stat-header">
+                  <span class="modal-stat-label"><i class="fa-solid fa-hand-fist"></i> COMBAT CORE</span>
+                  <span class="modal-stat-value" id="val-combat">0</span>
+                </div>
+                <div class="modal-stat-bar-container">
+                  <div class="modal-stat-bar-fill fill-combat" id="bar-combat"></div>
+                </div>
+              </div>
+              
+            </div>
+            
+            <div class="agg-index-box">
+              <span class="agg-label">METAHUMAN CAPACITY INDEX:</span>
+              <div class="agg-bar-container">
+                <div class="agg-bar-fill" id="agg-fill-percentage"></div>
+              </div>
+              <span class="agg-val" id="agg-stat-value">0%</span>
+            </div>
+          </div>
+          
+          <!-- Tab 2: Biography Details -->
+          <div class="tab-content" id="bio-tab">
+            <div class="bio-items-grid">
+              <div class="bio-data-item">
+                <span class="bio-label"><i class="fa-solid fa-book-open"></i> FIRST APPEARANCE</span>
+                <p class="bio-value" id="bio-first-app">Loading...</p>
+              </div>
+              <div class="bio-data-item">
+                <span class="bio-label"><i class="fa-solid fa-map-pin"></i> PLACE OF BIRTH</span>
+                <p class="bio-value" id="bio-birthplace">Loading...</p>
+              </div>
+              <div class="bio-data-item">
+                <span class="bio-label"><i class="fa-solid fa-briefcase"></i> OCCUPATION</span>
+                <p class="bio-value" id="bio-occupation">Loading...</p>
+              </div>
+              <div class="bio-data-item">
+                <span class="bio-label"><i class="fa-solid fa-mask"></i> ALTER EGOS</span>
+                <p class="bio-value" id="bio-alter-egos">Loading...</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Tab 3: Group & Affiliation Connections -->
+          <div class="tab-content" id="links-tab">
+            <div class="connections-list">
+              <div class="conn-item">
+                <span class="conn-label"><i class="fa-solid fa-users-rectangle"></i> TEAMS & ALLIANCES</span>
+                <p class="conn-value" id="conn-groups">Loading...</p>
+              </div>
+              <div class="conn-item">
+                <span class="conn-label"><i class="fa-solid fa-diagram-hierarchy"></i> FAMILY LINEAGE</span>
+                <p class="conn-value" id="conn-relatives">Loading...</p>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Holographic Battle Simulator Console -->
+  <div class="modal-overlay" id="battle-arena-modal">
+    <div class="modal-backdrop" id="battle-close-backdrop"></div>
+    <div class="battle-arena-panel">
+      
+      <button class="modal-close-btn" id="battle-close-trigger"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div class="arena-header">
+        <h2><i class="fa-solid fa-crosshairs pulse-slow"></i> TACTICAL BATTLE ARENA</h2>
+        <p>CALIBRATE COMBAT TELEMETRY BETWEEN REGISTERED CHAMPIONS</p>
+      </div>
+      
+      <div class="arena-body">
+        <div class="battle-hud-grid">
+          
+          <!-- Fighter 1 Panel -->
+          <div class="fighter-select-panel" id="fighter1-card">
+            <div class="f-selector-box" id="f1-selector-trigger">
+              <div class="f-placeholder" id="f1-placeholder-ui">
+                <i class="fa-solid fa-user-plus plus-glow"></i>
+                <span>LOAD CHAMPION 1</span>
+              </div>
+              <div class="f-selected-profile hide" id="f1-profile-ui">
+                <div class="f-avatar" id="f1-avatar"></div>
+                <h3 id="f1-name">Spider-Man</h3>
+                <span class="f-pub" id="f1-pub">Marvel</span>
+              </div>
+            </div>
+            
+            <div class="fighter-telemetry" id="f1-telemetry">
+              <!-- Telemetry -->
+            </div>
+          </div>
+          
+          <!-- Versus Column -->
+          <div class="versus-core">
+            <div class="vs-badge">VS</div>
+            <button class="battle-execute-btn" id="arena-fight-btn" disabled>RUN SIMULATION</button>
+            <button class="battle-reset-btn hide" id="arena-reset-btn"><i class="fa-solid fa-rotate-left"></i> RE-SET CHAMBERS</button>
+          </div>
+          
+          <!-- Fighter 2 Panel -->
+          <div class="fighter-select-panel" id="fighter2-card">
+            <div class="f-selector-box" id="f2-selector-trigger">
+              <div class="f-placeholder" id="f2-placeholder-ui">
+                <i class="fa-solid fa-user-plus plus-glow"></i>
+                <span>LOAD CHAMPION 2</span>
+              </div>
+              <div class="f-selected-profile hide" id="f2-profile-ui">
+                <div class="f-avatar" id="f2-avatar"></div>
+                <h3 id="f2-name">Batman</h3>
+                <span class="f-pub" id="f2-pub">DC</span>
+              </div>
+            </div>
+            
+            <div class="fighter-telemetry" id="f2-telemetry">
+              <!-- Telemetry -->
+            </div>
+          </div>
+          
+        </div>
+        
+        <!-- Live Combat Arena Screen -->
+        <div class="combat-console hide" id="arena-console">
+          <div class="console-hud-title">
+            <span><i class="fa-solid fa-terminal"></i> ARENA SYSTEM AUDIT LOGS</span>
+            <span class="console-status-blip"><span class="pulse-dot green"></span> SIMULATOR ON</span>
+          </div>
+          <div class="console-logs-window" id="console-logs-window">
+            <!-- Simulated logs output -->
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Character Picker Popup dialog -->
+  <div class="modal-overlay selector-dialog-modal" id="fighter-picker-modal">
+    <div class="modal-backdrop" id="picker-close-backdrop"></div>
+    <div class="picker-panel">
+      <div class="picker-header">
+        <h3>CHOOSE METAHUMAN FOR CHAMBER</h3>
+        <button class="picker-close-btn" id="picker-close-trigger"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="picker-list" id="picker-list-container">
+        <!-- Pickable rows -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Javascript Engines -->
+  <script src="./js/db.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
