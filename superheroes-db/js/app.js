@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SuperHeroes DB - Core JavaScript Orchestration Engine (Refined Grotesque)
+   SuperHeroes DB - Bulletproof Robust JavaScript Engine
    ========================================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let activeAlignment = "all";
   let activeSorter = "default";
   
-  // Persistent Favorites Set
+  // Persistent Bookmarks Set
   let favorites = new Set();
   
   // Battle Arena Fighters State
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let pickingFighterSlot = null; // 1 or 2
   let isSimulating = false;
 
-  // 2. DOM Elements Selection
+  // 2. DOM Elements Selection with Safety
   const heroesGrid = document.getElementById("heroes-grid");
   const searchInput = document.getElementById("search-input");
   const publisherFilters = document.getElementById("filter-publisher");
@@ -117,10 +117,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateFavoritesBadge() {
-    favCount.textContent = favorites.size;
+    if (favCount) {
+      favCount.textContent = favorites.size;
+    }
   }
 
   function renderFavoritesDrawer() {
+    if (!favListContainer) return;
     favListContainer.innerHTML = "";
     if (favorites.size === 0) {
       favListContainer.innerHTML = `
@@ -166,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 4. Registry Rendering & Card 3D-Tilt Interaction
   function renderRegistry() {
+    if (!heroesGrid) return;
     heroesGrid.innerHTML = "";
 
     // Apply Search debouncing and Filter chains
@@ -183,11 +187,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Update Status Banner
-    statusText.textContent = `METAHUMAN DATABASE ONLINE (${filtered.length} PROFILE${filtered.length === 1 ? '' : 'S'} MOUNTED)`;
+    if (statusText) {
+      statusText.textContent = `METAHUMAN DATABASE ONLINE (${filtered.length} PROFILE${filtered.length === 1 ? '' : 'S'} MOUNTED)`;
+    }
 
     if (filtered.length === 0) {
       heroesGrid.innerHTML = `
-        <div class="no-results-box animate-fade-in">
+        <div class="no-results-box">
           <i class="fa-solid fa-face-frown-open"></i>
           <h3>REGISTRY QUERY BLANK</h3>
           <p>Scanner found no metahumans matching the active criteria. Re-calibrate filters.</p>
@@ -253,7 +259,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const xc = rect.width / 2;
         const yc = rect.height / 2;
         
-        // Calculate angle ratios
         const tiltX = (yc - y) / 10;
         const tiltY = (x - xc) / 10;
 
@@ -275,9 +280,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       // Bind favorites toggle on click
-      card.querySelector(".fav-card-btn").addEventListener("click", (e) => {
-        toggleFavorite(hero.id, e);
-      });
+      const favBtn = card.querySelector(".fav-card-btn");
+      if (favBtn) {
+        favBtn.addEventListener("click", (e) => {
+          toggleFavorite(hero.id, e);
+        });
+      }
 
       heroesGrid.appendChild(card);
     });
@@ -289,27 +297,39 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!hero) return;
 
     // Reset tabs back to Stats
-    tabTriggers.forEach(t => t.classList.remove("active"));
-    tabContents.forEach(c => c.classList.remove("active"));
-    document.querySelector('.tab-trigger[data-tab="stats-tab"]').classList.add("active");
-    document.getElementById("stats-tab").classList.add("active");
+    if (tabTriggers && tabTriggers.length > 0) {
+      tabTriggers.forEach(t => t.classList.remove("active"));
+      const firstTab = document.querySelector('.tab-trigger[data-tab="stats-tab"]');
+      if (firstTab) firstTab.classList.add("active");
+    }
+    if (tabContents && tabContents.length > 0) {
+      tabContents.forEach(c => c.classList.remove("active"));
+      const firstContent = document.getElementById("stats-tab");
+      if (firstContent) firstContent.classList.add("active");
+    }
 
-    // Inject identity
-    document.getElementById("modal-char-name").textContent = hero.name.toUpperCase();
-    document.getElementById("modal-real-name").textContent = `Real Identity: ${hero.realName}`;
+    // Inject identity safely
+    const charNameEl = document.getElementById("modal-char-name");
+    const realNameEl = document.getElementById("modal-real-name");
+    const artBgEl = document.getElementById("modal-profile-art-bg");
     
-    // Set artwork backdrop
-    document.getElementById("modal-profile-art-bg").style.backgroundImage = `url('${hero.avatar}')`;
+    if (charNameEl) charNameEl.textContent = hero.name.toUpperCase();
+    if (realNameEl) realNameEl.textContent = `Real Identity: ${hero.realName}`;
+    if (artBgEl) artBgEl.style.backgroundImage = `url('${hero.avatar}')`;
 
     // Inject Publisher badge
     const pubBadge = document.getElementById("modal-badge-publisher");
-    pubBadge.className = `modal-pub-tag ${hero.publisher === "Marvel" ? "marvel-accent" : "dc-accent"}`;
-    pubBadge.textContent = hero.publisher.toUpperCase();
+    if (pubBadge) {
+      pubBadge.className = `modal-pub-tag ${hero.publisher === "Marvel" ? "marvel-accent" : "dc-accent"}`;
+      pubBadge.textContent = hero.publisher.toUpperCase();
+    }
 
     // Inject Alignment badge
     const alignBadge = document.getElementById("modal-badge-alignment");
-    alignBadge.className = `modal-alignment-badge ${hero.alignment}`;
-    alignBadge.textContent = hero.alignment.toUpperCase();
+    if (alignBadge) {
+      alignBadge.className = `modal-alignment-badge ${hero.alignment}`;
+      alignBadge.textContent = hero.alignment.toUpperCase();
+    }
 
     // Inject Stats & Sleek Horizontal Progress Bars
     const statsArr = ["intelligence", "strength", "speed", "durability", "power", "combat"];
@@ -318,62 +338,97 @@ document.addEventListener("DOMContentLoaded", () => {
       const val = hero.stats[statKey];
       const barEl = document.getElementById(`bar-${statKey}`);
       const valEl = document.getElementById(`val-${statKey}`);
+      const ringEl = document.getElementById(`ring-${statKey}`); // Fallback for old circular gauges cached
 
-      valEl.textContent = val;
-      barEl.style.width = "0%";
+      if (valEl) valEl.textContent = val;
       
-      // Delay slightly for animation transition
-      setTimeout(() => {
-        barEl.style.width = `${val}%`;
-      }, 50);
+      if (barEl) {
+        barEl.style.width = "0%";
+        setTimeout(() => {
+          barEl.style.width = `${val}%`;
+        }, 50);
+      }
+
+      if (ringEl) {
+        const strokeMax = 238;
+        const offset = strokeMax - (val / 100) * strokeMax;
+        setTimeout(() => {
+          ringEl.style.strokeDashoffset = offset;
+        }, 50);
+      }
     });
 
-    // Inject Aggregate stat fill bar
+    // Inject Aggregate stat fill bar safely
     const sum = statsArr.reduce((acc, curr) => acc + hero.stats[curr], 0);
     const avg = Math.round(sum / 6);
-    document.getElementById("agg-stat-value").textContent = `${avg}%`;
-    document.getElementById("agg-fill-percentage").style.width = "0%";
     
-    setTimeout(() => {
-      document.getElementById("agg-fill-percentage").style.width = `${avg}%`;
-    }, 200);
+    const aggValueEl = document.getElementById("agg-stat-value");
+    const aggFillEl = document.getElementById("agg-fill-percentage");
+    
+    if (aggValueEl) aggValueEl.textContent = `${avg}%`;
+    if (aggFillEl) {
+      aggFillEl.style.width = "0%";
+      setTimeout(() => {
+        aggFillEl.style.width = `${avg}%`;
+      }, 200);
+    }
 
-    // Inject Biography details
-    document.getElementById("bio-first-app").textContent = hero.biography.firstAppearance;
-    document.getElementById("bio-birthplace").textContent = hero.biography.placeOfBirth;
-    document.getElementById("bio-occupation").textContent = hero.biography.occupation;
-    document.getElementById("bio-alter-egos").textContent = hero.biography.alterEgos;
+    // Inject Biography details safely
+    const bioFirstEl = document.getElementById("bio-first-app");
+    const bioBirthEl = document.getElementById("bio-birthplace");
+    const bioOccEl = document.getElementById("bio-occupation");
+    const bioAlterEl = document.getElementById("bio-alter-egos");
+    
+    if (bioFirstEl) bioFirstEl.textContent = hero.biography.firstAppearance;
+    if (bioBirthEl) bioBirthEl.textContent = hero.biography.placeOfBirth;
+    if (bioOccEl) bioOccEl.textContent = hero.biography.occupation;
+    if (bioAlterEl) bioAlterEl.textContent = hero.biography.alterEgos;
 
-    // Inject Connections details
-    document.getElementById("conn-groups").textContent = hero.connections.groupAffiliation;
-    document.getElementById("conn-relatives").textContent = hero.connections.relatives;
+    // Inject Connections details safely
+    const connGroupsEl = document.getElementById("conn-groups");
+    const connRelEl = document.getElementById("conn-relatives");
+    
+    if (connGroupsEl) connGroupsEl.textContent = hero.connections.groupAffiliation;
+    if (connRelEl) connRelEl.textContent = hero.connections.relatives;
 
     // Activate modal
-    detailModal.classList.add("active");
+    if (detailModal) {
+      detailModal.classList.add("active");
+    }
     document.body.style.overflow = "hidden"; // Disable background scrolling
   }
 
   function closeDetailsModal() {
-    detailModal.classList.remove("active");
+    if (detailModal) {
+      detailModal.classList.remove("active");
+    }
     document.body.style.overflow = ""; // Restore background scrolling
     
-    // Clear bar widths back to default
+    // Clear bar and circle elements safely
     const statsArr = ["intelligence", "strength", "speed", "durability", "power", "combat"];
     statsArr.forEach(statKey => {
-      document.getElementById(`bar-${statKey}`).style.width = "0%";
+      const barEl = document.getElementById(`bar-${statKey}`);
+      if (barEl) barEl.style.width = "0%";
+      
+      const ringEl = document.getElementById(`ring-${statKey}`);
+      if (ringEl) ringEl.style.strokeDashoffset = 238;
     });
   }
 
   // 6. Holographic Combat Simulator logic
   function openBattleArena() {
-    battleArenaModal.classList.add("active");
+    if (battleArenaModal) {
+      battleArenaModal.classList.add("active");
+    }
     document.body.style.overflow = "hidden";
     resetBattleSimulation();
   }
 
   function closeBattleArena() {
     if (isSimulating) return; // Prevent closing mid-simulation
-    battleArenaModal.classList.remove("active");
+    if (battleArenaModal) {
+      battleArenaModal.classList.remove("active");
+    }
     document.body.style.overflow = "";
   }
 
@@ -382,27 +437,33 @@ document.addEventListener("DOMContentLoaded", () => {
     fighter2 = null;
     isSimulating = false;
 
-    // Reset visual frames
-    f1Placeholder.classList.remove("hide");
-    f1Profile.classList.add("hide");
-    f1Telemetry.innerHTML = "";
-    document.getElementById("fighter1-card").className = "fighter-select-panel";
+    // Reset visual frames safely
+    if (f1Placeholder) f1Placeholder.classList.remove("hide");
+    if (f1Profile) f1Profile.classList.add("hide");
+    if (f1Telemetry) f1Telemetry.innerHTML = "";
+    const cardF1 = document.getElementById("fighter1-card");
+    if (cardF1) cardF1.className = "fighter-select-panel";
 
-    f2Placeholder.classList.remove("hide");
-    f2Profile.classList.add("hide");
-    f2Telemetry.innerHTML = "";
-    document.getElementById("fighter2-card").className = "fighter-select-panel";
+    if (f2Placeholder) f2Placeholder.classList.remove("hide");
+    if (f2Profile) f2Profile.classList.add("hide");
+    if (f2Telemetry) f2Telemetry.innerHTML = "";
+    const cardF2 = document.getElementById("fighter2-card");
+    if (cardF2) cardF2.className = "fighter-select-panel";
 
-    fightBtn.removeAttribute("disabled");
-    fightBtn.classList.remove("hide");
-    fightBtn.textContent = "RUN SIMULATION";
-    resetBtn.classList.add("hide");
-    consoleLogs.classList.add("hide");
-    logsWindow.innerHTML = "";
+    if (fightBtn) {
+      fightBtn.removeAttribute("disabled");
+      fightBtn.classList.remove("hide");
+      fightBtn.textContent = "RUN SIMULATION";
+    }
+    if (resetBtn) resetBtn.classList.add("hide");
+    if (consoleLogs) consoleLogs.classList.add("hide");
+    if (logsWindow) logsWindow.innerHTML = "";
+    
     updateFightBtnState();
   }
 
   function updateFightBtnState() {
+    if (!fightBtn) return;
     if (fighter1 && fighter2) {
       fightBtn.removeAttribute("disabled");
     } else {
@@ -412,10 +473,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function openFighterPicker(slot) {
     pickingFighterSlot = slot;
+    if (!pickerListContainer) return;
     pickerListContainer.innerHTML = "";
 
     SUPERHEROES_DB.forEach(hero => {
-      // Prevent selecting the same hero in both chambers
       const alreadyPicked = (slot === 1 && fighter2 && fighter2.id === hero.id) ||
                             (slot === 2 && fighter1 && fighter1.id === hero.id);
 
@@ -438,11 +499,15 @@ document.addEventListener("DOMContentLoaded", () => {
       pickerListContainer.appendChild(pickerRow);
     });
 
-    pickerModal.classList.add("active");
+    if (pickerModal) {
+      pickerModal.classList.add("active");
+    }
   }
 
   function closeFighterPicker() {
-    pickerModal.classList.remove("active");
+    if (pickerModal) {
+      pickerModal.classList.remove("active");
+    }
     pickingFighterSlot = null;
   }
 
@@ -453,86 +518,98 @@ document.addEventListener("DOMContentLoaded", () => {
     if (pickingFighterSlot === 1) {
       fighter1 = hero;
       
-      // Update UI Frame
-      f1Placeholder.classList.add("hide");
-      f1Profile.classList.remove("hide");
-      document.getElementById("f1-avatar").style.backgroundImage = `url('${hero.avatar}')`;
-      document.getElementById("f1-name").textContent = hero.name.toUpperCase();
-      document.getElementById("f1-pub").textContent = hero.publisher.toUpperCase();
+      // Update UI Frame safely
+      if (f1Placeholder) f1Placeholder.classList.add("hide");
+      if (f1Profile) f1Profile.classList.remove("hide");
+      
+      const avatarEl = document.getElementById("f1-avatar");
+      const nameEl = document.getElementById("f1-name");
+      const pubEl = document.getElementById("f1-pub");
+      
+      if (avatarEl) avatarEl.style.backgroundImage = `url('${hero.avatar}')`;
+      if (nameEl) nameEl.textContent = hero.name.toUpperCase();
+      if (pubEl) pubEl.textContent = hero.publisher.toUpperCase();
       
       const cardF1 = document.getElementById("fighter1-card");
-      cardF1.className = `fighter-select-panel has-selected ${hero.publisher === "Marvel" ? "marvel-selected" : "dc-selected"}`;
+      if (cardF1) cardF1.className = `fighter-select-panel has-selected ${hero.publisher === "Marvel" ? "marvel-selected" : "dc-selected"}`;
 
-      // Inject telemetry bars
-      f1Telemetry.innerHTML = `
-        <div class="a-stat-row">
-          <div class="a-stat-label-row"><span>COMBAT</span><span>${hero.stats.combat}</span></div>
-          <div class="a-stat-bar-container"><div class="a-stat-bar-fill" style="width: ${hero.stats.combat}%; background-color: var(--color-combat)"></div></div>
-        </div>
-        <div class="a-stat-row">
-          <div class="a-stat-label-row"><span>POWER</span><span>${hero.stats.power}</span></div>
-          <div class="a-stat-bar-container"><div class="a-stat-bar-fill" style="width: ${hero.stats.power}%; background-color: var(--color-power)"></div></div>
-        </div>
-        <div class="a-stat-row">
-          <div class="a-stat-label-row"><span>STRENGTH</span><span>${hero.stats.strength}</span></div>
-          <div class="a-stat-bar-container"><div class="a-stat-bar-fill" style="width: ${hero.stats.strength}%; background-color: var(--color-strength)"></div></div>
-        </div>
-      `;
+      // Inject telemetry bars safely
+      if (f1Telemetry) {
+        f1Telemetry.innerHTML = `
+          <div class="a-stat-row">
+            <div class="a-stat-label-row"><span>COMBAT</span><span>${hero.stats.combat}</span></div>
+            <div class="a-stat-bar-container"><div class="a-stat-bar-fill" style="width: ${hero.stats.combat}%; background-color: var(--color-combat)"></div></div>
+          </div>
+          <div class="a-stat-row">
+            <div class="a-stat-label-row"><span>POWER</span><span>${hero.stats.power}</span></div>
+            <div class="a-stat-bar-container"><div class="a-stat-bar-fill" style="width: ${hero.stats.power}%; background-color: var(--color-power)"></div></div>
+          </div>
+          <div class="a-stat-row">
+            <div class="a-stat-label-row"><span>STRENGTH</span><span>${hero.stats.strength}</span></div>
+            <div class="a-stat-bar-container"><div class="a-stat-bar-fill" style="width: ${hero.stats.strength}%; background-color: var(--color-strength)"></div></div>
+          </div>
+        `;
+      }
     } else if (pickingFighterSlot === 2) {
       fighter2 = hero;
       
-      // Update UI Frame
-      f2Placeholder.classList.add("hide");
-      f2Profile.classList.remove("hide");
-      document.getElementById("f2-avatar").style.backgroundImage = `url('${hero.avatar}')`;
-      document.getElementById("f2-name").textContent = hero.name.toUpperCase();
-      document.getElementById("f2-pub").textContent = hero.publisher.toUpperCase();
+      // Update UI Frame safely
+      if (f2Placeholder) f2Placeholder.classList.add("hide");
+      if (f2Profile) f2Profile.classList.remove("hide");
+      
+      const avatarEl = document.getElementById("f2-avatar");
+      const nameEl = document.getElementById("f2-name");
+      const pubEl = document.getElementById("f2-pub");
+      
+      if (avatarEl) avatarEl.style.backgroundImage = `url('${hero.avatar}')`;
+      if (nameEl) nameEl.textContent = hero.name.toUpperCase();
+      if (pubEl) pubEl.textContent = hero.publisher.toUpperCase();
       
       const cardF2 = document.getElementById("fighter2-card");
-      cardF2.className = `fighter-select-panel has-selected ${hero.publisher === "Marvel" ? "marvel-selected" : "dc-selected"}`;
+      if (cardF2) cardF2.className = `fighter-select-panel has-selected ${hero.publisher === "Marvel" ? "marvel-selected" : "dc-selected"}`;
 
-      // Inject telemetry bars
-      f2Telemetry.innerHTML = `
-        <div class="a-stat-row">
-          <div class="a-stat-label-row"><span>COMBAT</span><span>${hero.stats.combat}</span></div>
-          <div class="a-stat-bar-container"><div class="a-stat-bar-fill" style="width: ${hero.stats.combat}%; background-color: var(--color-combat)"></div></div>
-        </div>
-        <div class="a-stat-row">
-          <div class="a-stat-label-row"><span>POWER</span><span>${hero.stats.power}</span></div>
-          <div class="a-stat-bar-container"><div class="a-stat-bar-fill" style="width: ${hero.stats.power}%; background-color: var(--color-power)"></div></div>
-        </div>
-        <div class="a-stat-row">
-          <div class="a-stat-label-row"><span>STRENGTH</span><span>${hero.stats.strength}</span></div>
-          <div class="a-stat-bar-container"><div class="a-stat-bar-fill" style="width: ${hero.stats.strength}%; background-color: var(--color-strength)"></div></div>
-        </div>
-      `;
+      // Inject telemetry bars safely
+      if (f2Telemetry) {
+        f2Telemetry.innerHTML = `
+          <div class="a-stat-row">
+            <div class="a-stat-label-row"><span>COMBAT</span><span>${hero.stats.combat}</span></div>
+            <div class="a-stat-bar-container"><div class="a-stat-bar-fill" style="width: ${hero.stats.combat}%; background-color: var(--color-combat)"></div></div>
+          </div>
+          <div class="a-stat-row">
+            <div class="a-stat-label-row"><span>POWER</span><span>${hero.stats.power}</span></div>
+            <div class="a-stat-bar-container"><div class="a-stat-bar-fill" style="width: ${hero.stats.power}%; background-color: var(--color-power)"></div></div>
+          </div>
+          <div class="a-stat-row">
+            <div class="a-stat-label-row"><span>STRENGTH</span><span>${hero.stats.strength}</span></div>
+            <div class="a-stat-bar-container"><div class="a-stat-bar-fill" style="width: ${hero.stats.strength}%; background-color: var(--color-strength)"></div></div>
+          </div>
+        `;
+      }
     }
 
     closeFighterPicker();
     updateFightBtnState();
   }
 
-  // Holographic battle evaluating simulation engine
+  // Combat evaluating simulation engine
   function executeBattleSimulation() {
     if (!fighter1 || !fighter2 || isSimulating) return;
 
     isSimulating = true;
-    fightBtn.setAttribute("disabled", "true");
-    consoleLogs.classList.remove("hide");
-    logsWindow.innerHTML = "";
+    if (fightBtn) fightBtn.setAttribute("disabled", "true");
+    if (consoleLogs) consoleLogs.classList.remove("hide");
+    if (logsWindow) logsWindow.innerHTML = "";
 
     const logs = [];
     logs.push({ text: `>>> INITIALIZING TACTICAL SYSTEM OVERLAY...`, type: "system" });
-    logs.push({ text: `>>> SCANNING FIGHTER 1 PROFILE: ${fighter1.name.toUpperCase()} [Combat Core: ${fighter1.stats.combat}]`, type: "system" });
-    logs.push({ text: `>>> SCANNING FIGHTER 2 PROFILE: ${fighter2.name.toUpperCase()} [Combat Core: ${fighter2.stats.combat}]`, type: "system" });
+    logs.push({ text: `>>> SCANNING CHAMPION 1: ${fighter1.name.toUpperCase()} [Combat Core: ${fighter1.stats.combat}]`, type: "system" });
+    logs.push({ text: `>>> SCANNING CHAMPION 2: ${fighter2.name.toUpperCase()} [Combat Core: ${fighter2.stats.combat}]`, type: "system" });
     logs.push({ text: `>>> BATTLE TELEMETRY LOCK ON. COMMENCING COMBAT SIMULATION...`, type: "system" });
 
-    // Round by round simulation loop
     let hp1 = 100;
     let hp2 = 100;
     let round = 1;
     
-    // Weighted Combat Evaluator formula:
     const getAttackRating = (f) => (f.stats.combat * 0.35) + (f.stats.power * 0.25) + (f.stats.strength * 0.2) + (f.stats.speed * 0.2);
     const getDefenseRating = (f) => (f.stats.durability * 0.2) + (f.stats.speed * 0.1);
 
@@ -577,7 +654,6 @@ document.addEventListener("DOMContentLoaded", () => {
       round++;
     }
 
-    // Determine the ultimate champion
     let winner = null;
     let hpRemaining = 0;
     if (hp1 > hp2) {
@@ -592,9 +668,13 @@ document.addEventListener("DOMContentLoaded", () => {
     logs.push({ text: `>>> SIMULATION ENGINE SHUTDOWN COMPLETE.`, type: "system" });
     logs.push({ text: `>>> THE CHAMPION IS: ${winner.name.toUpperCase()} (Health: ${hpRemaining}%)`, type: "winner" });
 
-    // Print logs to window with typewriter micro-delays
+    // Print logs safely with typewriter pacing
     let logIndex = 0;
     function printNextLog() {
+      if (!logsWindow) {
+        isSimulating = false;
+        return;
+      }
       if (logIndex < logs.length) {
         const log = logs[logIndex];
         const line = document.createElement("div");
@@ -602,117 +682,135 @@ document.addEventListener("DOMContentLoaded", () => {
         line.innerHTML = log.text.replace(/\n/g, "<br/>");
         
         logsWindow.appendChild(line);
-        logsWindow.scrollTop = logsWindow.scrollHeight; // Auto scroll to bottom
+        logsWindow.scrollTop = logsWindow.scrollHeight; // Auto scroll
         
         logIndex++;
-        setTimeout(printNextLog, log.type === "system" ? 250 : 600); // Dynamic reading pacing
+        setTimeout(printNextLog, log.type === "system" ? 200 : 500);
       } else {
-        // Simulation finishes
         isSimulating = false;
-        fightBtn.classList.add("hide");
-        resetBtn.classList.remove("hide");
+        if (fightBtn) fightBtn.classList.add("hide");
+        if (resetBtn) resetBtn.classList.remove("hide");
       }
     }
 
     printNextLog();
   }
 
-  // 7. Core Event Listeners Bindings
+  // 7. Core Event Listeners Bindings with Safety
   function setupEventListeners() {
     
-    // Keystroke Debouncer for identity scanner
-    let searchTimeout = null;
-    searchInput.addEventListener("input", (e) => {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => {
-        activeSearch = e.target.value;
+    // Keystroke Debouncer safely
+    if (searchInput) {
+      let searchTimeout = null;
+      searchInput.addEventListener("input", (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          activeSearch = e.target.value;
+          renderRegistry();
+        }, 150);
+      });
+    }
+
+    // Universe filters click safely
+    if (publisherFilters) {
+      publisherFilters.addEventListener("click", (e) => {
+        const btn = e.target.closest("button");
+        if (!btn) return;
+
+        publisherFilters.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        
+        activePublisher = btn.getAttribute("data-publisher");
         renderRegistry();
-      }, 150);
-    });
+      });
+    }
 
-    // Universe filters click
-    publisherFilters.addEventListener("click", (e) => {
-      const btn = e.target.closest("button");
-      if (!btn) return;
+    // Alignment filters click safely
+    if (alignmentFilters) {
+      alignmentFilters.addEventListener("click", (e) => {
+        const btn = e.target.closest("button");
+        if (!btn) return;
 
-      publisherFilters.querySelectorAll("button").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      
-      activePublisher = btn.getAttribute("data-publisher");
-      renderRegistry();
-    });
+        alignmentFilters.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
 
-    // Alignment filters click
-    alignmentFilters.addEventListener("click", (e) => {
-      const btn = e.target.closest("button");
-      if (!btn) return;
+        activeAlignment = btn.getAttribute("data-alignment");
+        renderRegistry();
+      });
+    }
 
-      alignmentFilters.querySelectorAll("button").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+    // Sort select change safely
+    if (sortSelect) {
+      sortSelect.addEventListener("change", (e) => {
+        activeSorter = e.target.value;
+        renderRegistry();
+      });
+    }
 
-      activeAlignment = btn.getAttribute("data-alignment");
-      renderRegistry();
-    });
+    // Favorites HUD triggers safely
+    if (favsTrigger) favsTrigger.addEventListener("click", openFavoritesDrawer);
+    if (favsClose) favsClose.addEventListener("click", closeFavoritesDrawer);
+    if (favDrawerOverlay) favDrawerOverlay.addEventListener("click", closeFavoritesDrawer);
 
-    // Sort select change
-    sortSelect.addEventListener("change", (e) => {
-      activeSorter = e.target.value;
-      renderRegistry();
-    });
+    // Detail Modal Close safely
+    if (modalCloseTrigger) modalCloseTrigger.addEventListener("click", closeDetailsModal);
+    if (modalCloseBackdrop) modalCloseBackdrop.addEventListener("click", closeDetailsModal);
 
-    // Favorites HUD triggers
-    favsTrigger.addEventListener("click", openFavoritesDrawer);
-    favsClose.addEventListener("click", closeFavoritesDrawer);
-    favDrawerOverlay.addEventListener("click", closeFavoritesDrawer);
+    // Modal Tabs logic safely
+    if (modalTabs) {
+      modalTabs.addEventListener("click", (e) => {
+        const tabBtn = e.target.closest(".tab-trigger");
+        if (!tabBtn) return;
 
-    // Detail Modal Close
-    modalCloseTrigger.addEventListener("click", closeDetailsModal);
-    modalCloseBackdrop.addEventListener("click", closeDetailsModal);
+        if (tabTriggers) tabTriggers.forEach(t => t.classList.remove("active"));
+        if (tabContents) tabContents.forEach(c => c.classList.remove("active"));
 
-    // Modal Tabs logic
-    modalTabs.addEventListener("click", (e) => {
-      const tabBtn = e.target.closest(".tab-trigger");
-      if (!tabBtn) return;
+        tabBtn.classList.add("active");
+        const contentId = tabBtn.getAttribute("data-tab");
+        const targetContent = document.getElementById(contentId);
+        if (targetContent) targetContent.classList.add("active");
+      });
+    }
 
-      tabTriggers.forEach(t => t.classList.remove("active"));
-      tabContents.forEach(c => c.classList.remove("active"));
+    // Battle Arena HUD triggers safely
+    if (battleTrigger) battleTrigger.addEventListener("click", openBattleArena);
+    if (battleCloseTrigger) battleCloseTrigger.addEventListener("click", closeBattleArena);
+    if (battleCloseBackdrop) battleCloseBackdrop.addEventListener("click", closeBattleArena);
 
-      tabBtn.classList.add("active");
-      const contentId = tabBtn.getAttribute("data-tab");
-      document.getElementById(contentId).classList.add("active");
-    });
+    // Arena Select slot triggers safely
+    if (f1SelectorTrigger) {
+      f1SelectorTrigger.addEventListener("click", () => {
+        if (isSimulating) return;
+        openFighterPicker(1);
+      });
+    }
+    if (f2SelectorTrigger) {
+      f2SelectorTrigger.addEventListener("click", () => {
+        if (isSimulating) return;
+        openFighterPicker(2);
+      });
+    }
 
-    // Battle Arena Hud triggers
-    battleTrigger.addEventListener("click", openBattleArena);
-    battleCloseTrigger.addEventListener("click", closeBattleArena);
-    battleCloseBackdrop.addEventListener("click", closeBattleArena);
+    // Pick Fighter modal close safely
+    if (pickerCloseTrigger) pickerCloseTrigger.addEventListener("click", closeFighterPicker);
+    if (pickerCloseBackdrop) pickerCloseBackdrop.addEventListener("click", closeFighterPicker);
 
-    // Arena Select slot triggers
-    f1SelectorTrigger.addEventListener("click", () => {
-      if (isSimulating) return;
-      openFighterPicker(1);
-    });
-    f2SelectorTrigger.addEventListener("click", () => {
-      if (isSimulating) return;
-      openFighterPicker(2);
-    });
-
-    // Pick Fighter modal close
-    pickerCloseTrigger.addEventListener("click", closeFighterPicker);
-    pickerCloseBackdrop.addEventListener("click", closeFighterPicker);
-
-    // Combat execute & Reset
-    fightBtn.addEventListener("click", executeBattleSimulation);
-    resetBtn.addEventListener("click", resetBattleSimulation);
+    // Combat execute & Reset safely
+    if (fightBtn) fightBtn.addEventListener("click", executeBattleSimulation);
+    if (resetBtn) resetBtn.addEventListener("click", resetBattleSimulation);
   }
 
   function openFavoritesDrawer() {
     renderFavoritesDrawer();
-    favDrawer.classList.add("active");
+    if (favDrawer) {
+      favDrawer.classList.add("active");
+    }
   }
 
   function closeFavoritesDrawer() {
-    favDrawer.classList.remove("active");
+    if (favDrawer) {
+      favDrawer.classList.remove("active");
+    }
   }
 
   // Launch Registry
