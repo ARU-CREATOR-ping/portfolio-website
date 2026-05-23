@@ -544,6 +544,7 @@ p {
 
 
 /* Specific background color themes for each mockup */
+.project-bg-elitevoyage { background-color: #c7d2fe !important; }  /* Periwinkle Blue */
 .project-bg-weather { background-color: #d1fae5 !important; }   /* Mint Green */
 .project-bg-digitallabour { background-color: #fed7aa !important; }  /* Cool Blue-Grey */
 .project-bg-superhero { background-color: #fef08a !important; } /* Warm Yellow */
