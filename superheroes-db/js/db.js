@@ -5,7 +5,7 @@ const SUPERHEROES_DB = [
     realName: "Peter Parker",
     publisher: "Marvel",
     alignment: "good",
-    avatar: "https://images.unsplash.com/photo-1604200213928-ba3cf4fc8436?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/620-spider-man.jpg",
     stats: {
       intelligence: 90,
       strength: 55,
@@ -31,7 +31,7 @@ const SUPERHEROES_DB = [
     realName: "Bruce Wayne",
     publisher: "DC",
     alignment: "good",
-    avatar: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/70-batman.jpg",
     stats: {
       intelligence: 100,
       strength: 20,
@@ -57,7 +57,7 @@ const SUPERHEROES_DB = [
     realName: "Tony Stark",
     publisher: "Marvel",
     alignment: "good",
-    avatar: "https://images.unsplash.com/photo-1608889175123-8ec330b86f84?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/346-iron-man.jpg",
     stats: {
       intelligence: 98,
       strength: 85,
@@ -83,7 +83,7 @@ const SUPERHEROES_DB = [
     realName: "Clark Kent (Kal-El)",
     publisher: "DC",
     alignment: "good",
-    avatar: "https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/644-superman.jpg",
     stats: {
       intelligence: 94,
       strength: 100,
@@ -109,7 +109,7 @@ const SUPERHEROES_DB = [
     realName: "Diana Prince",
     publisher: "DC",
     alignment: "good",
-    avatar: "https://images.unsplash.com/photo-1594744803329-e58b31de215f?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/729-wonder-woman.jpg",
     stats: {
       intelligence: 88,
       strength: 100,
@@ -135,7 +135,7 @@ const SUPERHEROES_DB = [
     realName: "Logan (James Howlett)",
     publisher: "Marvel",
     alignment: "good",
-    avatar: "https://images.unsplash.com/photo-1620336655055-088d06e36bf0?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/717-wolverine.jpg",
     stats: {
       intelligence: 63,
       strength: 32,
@@ -161,7 +161,7 @@ const SUPERHEROES_DB = [
     realName: "Unknown",
     publisher: "DC",
     alignment: "evil",
-    avatar: "https://images.unsplash.com/photo-1601513525393-8393e5518b31?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/370-joker.jpg",
     stats: {
       intelligence: 90,
       strength: 10,
@@ -187,7 +187,7 @@ const SUPERHEROES_DB = [
     realName: "Wade Wilson",
     publisher: "Marvel",
     alignment: "neutral",
-    avatar: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/213-deadpool.jpg",
     stats: {
       intelligence: 69,
       strength: 35,
@@ -213,7 +213,7 @@ const SUPERHEROES_DB = [
     realName: "Thanos of Titan",
     publisher: "Marvel",
     alignment: "evil",
-    avatar: "https://images.unsplash.com/photo-1501159599894-155982264a55?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/659-thanos.jpg",
     stats: {
       intelligence: 100,
       strength: 100,
@@ -239,7 +239,7 @@ const SUPERHEROES_DB = [
     realName: "Thor Odinson",
     publisher: "Marvel",
     alignment: "good",
-    avatar: "https://images.unsplash.com/photo-1559156521-12563f68d6f5?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/655-thor.jpg",
     stats: {
       intelligence: 69,
       strength: 100,
@@ -265,7 +265,7 @@ const SUPERHEROES_DB = [
     realName: "Bruce Banner",
     publisher: "Marvel",
     alignment: "good",
-    avatar: "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/332-hulk.jpg",
     stats: {
       intelligence: 88,
       strength: 100,
@@ -291,7 +291,7 @@ const SUPERHEROES_DB = [
     realName: "Steve Rogers",
     publisher: "Marvel",
     alignment: "good",
-    avatar: "https://images.unsplash.com/photo-1624561172888-ac93c696e10c?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/149-captain-america.jpg",
     stats: {
       intelligence: 78,
       strength: 30,
@@ -317,7 +317,7 @@ const SUPERHEROES_DB = [
     realName: "Stephen Strange",
     publisher: "Marvel",
     alignment: "good",
-    avatar: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/226-doctor-strange.jpg",
     stats: {
       intelligence: 100,
       strength: 10,
@@ -343,7 +343,7 @@ const SUPERHEROES_DB = [
     realName: "Barry Allen",
     publisher: "DC",
     alignment: "good",
-    avatar: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/263-flash.jpg",
     stats: {
       intelligence: 88,
       strength: 50,
@@ -369,7 +369,7 @@ const SUPERHEROES_DB = [
     realName: "Lex Luthor",
     publisher: "DC",
     alignment: "evil",
-    avatar: "https://images.unsplash.com/photo-1589254065878-42c9da997008?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/405-lex-luthor.jpg",
     stats: {
       intelligence: 100,
       strength: 15,
@@ -395,7 +395,7 @@ const SUPERHEROES_DB = [
     realName: "Harleen Quinzel",
     publisher: "DC",
     alignment: "neutral",
-    avatar: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/309-harley-quinn.jpg",
     stats: {
       intelligence: 85,
       strength: 20,
@@ -421,7 +421,7 @@ const SUPERHEROES_DB = [
     realName: "Eddie Brock",
     publisher: "Marvel",
     alignment: "neutral",
-    avatar: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=400",
+    avatar: "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/lg/687-venom.jpg",
     stats: {
       intelligence: 75,
       strength: 70,

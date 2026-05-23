@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SuperHeroes DB - Core JavaScript Orchestration Engine
+   SuperHeroes DB - Core JavaScript Orchestration Engine (Refined Grotesque)
    ========================================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
       favListContainer.innerHTML = `
         <div class="empty-fav-state">
           <i class="fa-solid fa-bookmark-slash"></i>
-          <p>NO BOOKMARKS PERSISTED</p>
+          <p>NO PERSISTED BOOKMARKS</p>
           <span style="font-size: 0.65rem; color: var(--color-text-muted);">Add heroes to quick access</span>
         </div>
       `;
@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <h4>${hero.name}</h4>
             <p>${hero.realName} | ${hero.publisher}</p>
           </div>
-          <button class="fav-delete-btn" title="Remove Favorite"><i class="fa-solid fa-trash-can"></i></button>
+          <button class="fav-delete-btn" title="Remove Bookmark"><i class="fa-solid fa-trash-can"></i></button>
         `;
         
         // Open details on click
@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Update Status Banner
-    statusText.textContent = `METAHUMAN REGISTRY ONLINE (${filtered.length} PROFILE${filtered.length === 1 ? '' : 'S'} INSTALLED)`;
+    statusText.textContent = `METAHUMAN DATABASE ONLINE (${filtered.length} PROFILE${filtered.length === 1 ? '' : 'S'} MOUNTED)`;
 
     if (filtered.length === 0) {
       heroesGrid.innerHTML = `
@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="card-body">
           <div class="card-title-row">
             <h3>${hero.name}</h3>
-            <button class="fav-card-btn ${isFav ? 'active' : ''}" title="Favorite">
+            <button class="fav-card-btn ${isFav ? 'active' : ''}" title="Bookmark">
               ${isFav ? '<i class="fa-solid fa-bookmark"></i>' : '<i class="fa-regular fa-bookmark"></i>'}
             </button>
           </div>
@@ -283,7 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 5. Dynamic Details Modal & Circular Gauges
+  // 5. Dynamic Details Modal & Sleek Progress Bars
   function openDetailsModal(id) {
     const hero = SUPERHEROES_DB.find(h => h.id === id);
     if (!hero) return;
@@ -311,23 +311,20 @@ document.addEventListener("DOMContentLoaded", () => {
     alignBadge.className = `modal-alignment-badge ${hero.alignment}`;
     alignBadge.textContent = hero.alignment.toUpperCase();
 
-    // Inject Stats & Circular Gauges
-    // Circumference = 2 * PI * r = 2 * PI * 38 = 238.76px (approx 238)
-    const strokeMax = 238;
+    // Inject Stats & Sleek Horizontal Progress Bars
     const statsArr = ["intelligence", "strength", "speed", "durability", "power", "combat"];
     
     statsArr.forEach(statKey => {
       const val = hero.stats[statKey];
-      const circleEl = document.getElementById(`ring-${statKey}`);
+      const barEl = document.getElementById(`bar-${statKey}`);
       const valEl = document.getElementById(`val-${statKey}`);
 
       valEl.textContent = val;
-      // Animate stroke dashoffset
-      const offset = strokeMax - (val / 100) * strokeMax;
+      barEl.style.width = "0%";
       
-      // Delay slightly for transition
+      // Delay slightly for animation transition
       setTimeout(() => {
-        circleEl.style.strokeDashoffset = offset;
+        barEl.style.width = `${val}%`;
       }, 50);
     });
 
@@ -360,10 +357,10 @@ document.addEventListener("DOMContentLoaded", () => {
     detailModal.classList.remove("active");
     document.body.style.overflow = ""; // Restore background scrolling
     
-    // Clear SVG offsets back to default
+    // Clear bar widths back to default
     const statsArr = ["intelligence", "strength", "speed", "durability", "power", "combat"];
     statsArr.forEach(statKey => {
-      document.getElementById(`ring-${statKey}`).style.strokeDashoffset = 238;
+      document.getElementById(`bar-${statKey}`).style.width = "0%";
     });
   }
 
@@ -398,7 +395,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fightBtn.removeAttribute("disabled");
     fightBtn.classList.remove("hide");
-    fightBtn.textContent = "ENGAGE SYSTEM";
+    fightBtn.textContent = "RUN SIMULATION";
     resetBtn.classList.add("hide");
     consoleLogs.classList.add("hide");
     logsWindow.innerHTML = "";
@@ -536,8 +533,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let round = 1;
     
     // Weighted Combat Evaluator formula:
-    // Base damage = Attacker (Combat * 0.3 + Power * 0.2 + Strength * 0.2 + Speed * 0.15)
-    // Defense reduction = Defender (Durability * 0.15 + Speed * 0.05)
     const getAttackRating = (f) => (f.stats.combat * 0.35) + (f.stats.power * 0.25) + (f.stats.strength * 0.2) + (f.stats.speed * 0.2);
     const getDefenseRating = (f) => (f.stats.durability * 0.2) + (f.stats.speed * 0.1);
 
@@ -556,7 +551,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const actionTexts1 = [
         `${fighter1.name} unleashes a devastating physical combo, hitting for ${finalDamage1} points!`,
-        `${fighter1.name} channels cosmic energy energy output, tearing down ${fighter2.name}'s defenses for ${finalDamage1} damage!`,
+        `${fighter1.name} channels cosmic energy output, tearing down ${fighter2.name}'s defenses for ${finalDamage1} damage!`,
         `${fighter1.name} strikes with precise tactical combat intelligence, finding a critical opening for ${finalDamage1} damage!`
       ];
       logs.push({ text: actionTexts1[Math.floor(Math.random() * actionTexts1.length)], type: "action" });

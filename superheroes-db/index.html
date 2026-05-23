@@ -3,27 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SuperHeroes DB - Cinematic Cosmic Terminal</title>
+  <title>SuperHeroes DB - Registry Terminal</title>
   
-  <!-- Google Fonts: Orbitron for tech headers, Outfit for clean text -->
+  <!-- Premium Fonts: Space Grotesk for solid headings, Plus Jakarta Sans for elegant body copy -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   
-  <!-- FontAwesome for cool icons -->
+  <!-- FontAwesome for layout icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Custom Cinematic Dark Stylesheet -->
+  <!-- Custom Sleek Dark Stylesheet -->
   <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 
-  <!-- Ambient Cosmic Nebulae Background Glows -->
-  <div class="nebula-glow n-red"></div>
-  <div class="nebula-glow n-cyan"></div>
-  <div class="nebula-glow n-purple"></div>
-
-  <!-- Top Navigation & Branding Header -->
+  <!-- Top Navigation & Editorial Header -->
   <header class="terminal-header">
     <div class="header-left">
       <a href="../index.html" class="back-link">
@@ -32,11 +27,11 @@
     </div>
     <div class="header-center">
       <h1 class="brand-title">SUPERHEROES <span class="accent-glow">DB</span></h1>
-      <p class="brand-subtitle">CINEMATIC METAHUMAN REGISTRY</p>
+      <p class="brand-subtitle">METAHUMAN REGISTRY PORTAL</p>
     </div>
     <div class="header-right">
       <button class="control-hud-btn" id="hud-favs-trigger">
-        <i class="fa-solid fa-bookmark"></i> FAVORITES <span class="fav-count-badge" id="fav-count">0</span>
+        <i class="fa-solid fa-bookmark"></i> BOOKMARKS <span class="fav-count-badge" id="fav-count">0</span>
       </button>
       <button class="control-hud-btn arena-glow-btn" id="hud-battle-trigger">
         <i class="fa-solid fa-crosshairs"></i> BATTLE ARENA
@@ -48,18 +43,18 @@
   <section class="hud-panel">
     <div class="hud-wrapper">
       
-      <!-- Search Column -->
+      <!-- Search Input -->
       <div class="hud-group hud-search-group">
         <label for="search-input"><i class="fa-solid fa-magnifying-glass"></i> IDENTITY SCANNER</label>
         <div class="input-container">
-          <input type="text" id="search-input" placeholder="Type name (e.g. Batman)..." autocomplete="off">
+          <input type="text" id="search-input" placeholder="Search by name or identity..." autocomplete="off">
           <span class="scan-laser"></span>
         </div>
       </div>
       
       <!-- Publisher Filters -->
       <div class="hud-group">
-        <label><i class="fa-solid fa-building-shield"></i> UNIVERSE ORIGIN</label>
+        <label><i class="fa-solid fa-building-shield"></i> UNIVERSE</label>
         <div class="hud-btn-group" id="filter-publisher">
           <button class="hud-btn active" data-publisher="all">ALL</button>
           <button class="hud-btn marvel-accent-btn" data-publisher="marvel">MARVEL</button>
@@ -69,7 +64,7 @@
       
       <!-- Alignment Filters -->
       <div class="hud-group">
-        <label><i class="fa-solid fa-yin-yang"></i> ALIGNMENT PROFILE</label>
+        <label><i class="fa-solid fa-yin-yang"></i> PROFILE ALIGNMENT</label>
         <div class="hud-btn-group" id="filter-alignment">
           <button class="hud-btn active" data-alignment="all">ALL</button>
           <button class="hud-btn hero-accent-btn" data-alignment="good">HERO</button>
@@ -80,42 +75,42 @@
       
       <!-- Sorting Dropdown -->
       <div class="hud-group">
-        <label for="sort-select"><i class="fa-solid fa-arrow-down-up-lock"></i> POWER CALIBRATION</label>
+        <label for="sort-select"><i class="fa-solid fa-arrow-down-up-lock"></i> SORT CALIBRATION</label>
         <select id="sort-select" class="hud-select">
           <option value="default">REGISTRY DEFAULT</option>
-          <option value="intelligence">INTELLECT LEVEL</option>
+          <option value="intelligence">INTELLIGENCE RATING</option>
           <option value="strength">PHYSICAL STRENGTH</option>
           <option value="speed">SPEED VELOCITY</option>
-          <option value="durability">DURABILITY RATING</option>
+          <option value="durability">DURABILITY LEVEL</option>
           <option value="power">ENERGY OUTPUT</option>
-          <option value="combat">COMBAT RATING</option>
+          <option value="combat">COMBAT CORE</option>
         </select>
       </div>
 
     </div>
   </section>
 
-  <!-- Registry Stats Banner -->
+  <!-- Registry Status Banner -->
   <div class="hud-status-banner">
     <div class="status-indicator">
       <span class="pulse-dot"></span>
-      <span class="status-text" id="status-text">METAHUMAN REGISTRY ONLINE (17 PROFILES INSTALLED)</span>
+      <span class="status-text" id="status-text">METAHUMAN DATABASE INSTALLED</span>
     </div>
   </div>
 
   <!-- Primary Superheroes Grid Section -->
   <main class="registry-container">
     <div class="heroes-grid" id="heroes-grid">
-      <!-- Generated character cards injected here dynamically -->
+      <!-- Cards dynamically injected here -->
     </div>
   </main>
 
-  <!-- Slide-out Favorites Drawer -->
+  <!-- Slide-out Bookmarks Drawer -->
   <div class="hud-drawer" id="favorites-drawer">
     <div class="drawer-overlay" id="fav-drawer-overlay"></div>
     <div class="drawer-panel">
       <div class="drawer-header">
-        <h2><i class="fa-solid fa-bookmark text-yellow"></i> PERSISTED FAVORITES</h2>
+        <h2><i class="fa-solid fa-bookmark text-yellow"></i> PERSISTED BOOKMARKS</h2>
         <button class="drawer-close" id="hud-favs-close"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="drawer-body" id="fav-list-container">
@@ -138,8 +133,8 @@
           <div class="modal-art-overlay">
             <span class="modal-pub-tag" id="modal-badge-publisher">PUBLISHER</span>
             <div class="modal-identity">
-              <h2 id="modal-char-name">SUPERHERO NAME</h2>
-              <h4 id="modal-real-name">Real Name: Stephen Strange</h4>
+              <h2 id="modal-char-name">CHARACTER NAME</h2>
+              <h4 id="modal-real-name">Real Identity</h4>
               <span class="modal-alignment-badge" id="modal-badge-alignment">ALIGNMENT</span>
             </div>
           </div>
@@ -149,86 +144,79 @@
         <div class="modal-profile-data">
           
           <div class="modal-tabs">
-            <button class="tab-trigger active" data-tab="stats-tab"><i class="fa-solid fa-bolt-lightning"></i> POWER INDEX</button>
+            <button class="tab-trigger active" data-tab="stats-tab"><i class="fa-solid fa-bolt-lightning"></i> POWER VALUES</button>
             <button class="tab-trigger" data-tab="bio-tab"><i class="fa-solid fa-address-card"></i> BIOGRAPHY</button>
-            <button class="tab-trigger" data-tab="links-tab"><i class="fa-solid fa-diagram-project"></i> CONNECTIONS</button>
+            <button class="tab-trigger" data-tab="links-tab"><i class="fa-solid fa-diagram-project"></i> TEAM LINKS</button>
           </div>
           
-          <!-- Tab 1: Stats Ratings (Glow Progress Rings) -->
+          <!-- Tab 1: Stats Ratings (Sleek Horizontal Bars) -->
           <div class="tab-content active" id="stats-tab">
-            <div class="stats-radar-grid">
+            <div class="modal-stats-list">
               
-              <!-- Individual SVG Stat Rings -->
-              <div class="stat-gauge-wrapper">
-                <div class="svg-ring-container">
-                  <svg class="ring-svg" width="90" height="90">
-                    <circle class="ring-bg" cx="45" cy="45" r="38"></circle>
-                    <circle class="ring-fill glow-intellect" cx="45" cy="45" r="38" id="ring-intellect" stroke-dasharray="238" stroke-dashoffset="238"></circle>
-                  </svg>
-                  <span class="stat-value" id="val-intellect">0</span>
+              <div class="modal-stat-row">
+                <div class="modal-stat-header">
+                  <span class="modal-stat-label"><i class="fa-solid fa-brain"></i> INTELLIGENCE</span>
+                  <span class="modal-stat-value" id="val-intelligence">0</span>
                 </div>
-                <span class="stat-label">INTELLECT</span>
+                <div class="modal-stat-bar-container">
+                  <div class="modal-stat-bar-fill fill-intelligence" id="bar-intelligence"></div>
+                </div>
               </div>
-              
-              <div class="stat-gauge-wrapper">
-                <div class="svg-ring-container">
-                  <svg class="ring-svg" width="90" height="90">
-                    <circle class="ring-bg" cx="45" cy="45" r="38"></circle>
-                    <circle class="ring-fill glow-strength" cx="45" cy="45" r="38" id="ring-strength" stroke-dasharray="238" stroke-dashoffset="238"></circle>
-                  </svg>
-                  <span class="stat-value" id="val-strength">0</span>
+
+              <div class="modal-stat-row">
+                <div class="modal-stat-header">
+                  <span class="modal-stat-label"><i class="fa-solid fa-dumbbell"></i> STRENGTH</span>
+                  <span class="modal-stat-value" id="val-strength">0</span>
                 </div>
-                <span class="stat-label">STRENGTH</span>
+                <div class="modal-stat-bar-container">
+                  <div class="modal-stat-bar-fill fill-strength" id="bar-strength"></div>
+                </div>
               </div>
-              
-              <div class="stat-gauge-wrapper">
-                <div class="svg-ring-container">
-                  <svg class="ring-svg" width="90" height="90">
-                    <circle class="ring-bg" cx="45" cy="45" r="38"></circle>
-                    <circle class="ring-fill glow-speed" cx="45" cy="45" r="38" id="ring-speed" stroke-dasharray="238" stroke-dashoffset="238"></circle>
-                  </svg>
-                  <span class="stat-value" id="val-speed">0</span>
+
+              <div class="modal-stat-row">
+                <div class="modal-stat-header">
+                  <span class="modal-stat-label"><i class="fa-solid fa-gauge-high"></i> SPEED</span>
+                  <span class="modal-stat-value" id="val-speed">0</span>
                 </div>
-                <span class="stat-label">SPEED</span>
+                <div class="modal-stat-bar-container">
+                  <div class="modal-stat-bar-fill fill-speed" id="bar-speed"></div>
+                </div>
               </div>
-              
-              <div class="stat-gauge-wrapper">
-                <div class="svg-ring-container">
-                  <svg class="ring-svg" width="90" height="90">
-                    <circle class="ring-bg" cx="45" cy="45" r="38"></circle>
-                    <circle class="ring-fill glow-durability" cx="45" cy="45" r="38" id="ring-durability" stroke-dasharray="238" stroke-dashoffset="238"></circle>
-                  </svg>
-                  <span class="stat-value" id="val-durability">0</span>
+
+              <div class="modal-stat-row">
+                <div class="modal-stat-header">
+                  <span class="modal-stat-label"><i class="fa-solid fa-shield-halved"></i> DURABILITY</span>
+                  <span class="modal-stat-value" id="val-durability">0</span>
                 </div>
-                <span class="stat-label">DURABILITY</span>
+                <div class="modal-stat-bar-container">
+                  <div class="modal-stat-bar-fill fill-durability" id="bar-durability"></div>
+                </div>
               </div>
-              
-              <div class="stat-gauge-wrapper">
-                <div class="svg-ring-container">
-                  <svg class="ring-svg" width="90" height="90">
-                    <circle class="ring-bg" cx="45" cy="45" r="38"></circle>
-                    <circle class="ring-fill glow-power" cx="45" cy="45" r="38" id="ring-power" stroke-dasharray="238" stroke-dashoffset="238"></circle>
-                  </svg>
-                  <span class="stat-value" id="val-power">0</span>
+
+              <div class="modal-stat-row">
+                <div class="modal-stat-header">
+                  <span class="modal-stat-label"><i class="fa-solid fa-bolt"></i> ENERGY OUTPUT</span>
+                  <span class="modal-stat-value" id="val-power">0</span>
                 </div>
-                <span class="stat-label">ENERGY OUTPUT</span>
+                <div class="modal-stat-bar-container">
+                  <div class="modal-stat-bar-fill fill-power" id="bar-power"></div>
+                </div>
               </div>
-              
-              <div class="stat-gauge-wrapper">
-                <div class="svg-ring-container">
-                  <svg class="ring-svg" width="90" height="90">
-                    <circle class="ring-bg" cx="45" cy="45" r="38"></circle>
-                    <circle class="ring-fill glow-combat" cx="45" cy="45" r="38" id="ring-combat" stroke-dasharray="238" stroke-dashoffset="238"></circle>
-                  </svg>
-                  <span class="stat-value" id="val-combat">0</span>
+
+              <div class="modal-stat-row">
+                <div class="modal-stat-header">
+                  <span class="modal-stat-label"><i class="fa-solid fa-hand-fist"></i> COMBAT CORE</span>
+                  <span class="modal-stat-value" id="val-combat">0</span>
                 </div>
-                <span class="stat-label">COMBAT INDEX</span>
+                <div class="modal-stat-bar-container">
+                  <div class="modal-stat-bar-fill fill-combat" id="bar-combat"></div>
+                </div>
               </div>
               
             </div>
             
             <div class="agg-index-box">
-              <span class="agg-label">AGGREGATE RATING:</span>
+              <span class="agg-label">METAHUMAN CAPACITY INDEX:</span>
               <div class="agg-bar-container">
                 <div class="agg-bar-fill" id="agg-fill-percentage"></div>
               </div>
@@ -262,11 +250,11 @@
           <div class="tab-content" id="links-tab">
             <div class="connections-list">
               <div class="conn-item">
-                <span class="conn-label"><i class="fa-solid fa-users-rectangle"></i> TEAMS / ALLIANCES</span>
+                <span class="conn-label"><i class="fa-solid fa-users-rectangle"></i> TEAMS & ALLIANCES</span>
                 <p class="conn-value" id="conn-groups">Loading...</p>
               </div>
               <div class="conn-item">
-                <span class="conn-label"><i class="fa-solid fa-diagram-hierarchy"></i> FAMILY MEMBERS</span>
+                <span class="conn-label"><i class="fa-solid fa-diagram-hierarchy"></i> FAMILY LINEAGE</span>
                 <p class="conn-value" id="conn-relatives">Loading...</p>
               </div>
             </div>
@@ -286,8 +274,8 @@
       <button class="modal-close-btn" id="battle-close-trigger"><i class="fa-solid fa-xmark"></i></button>
       
       <div class="arena-header">
-        <h2><i class="fa-solid fa-crosshairs pulse-slow"></i> HOLOGRAPHIC COMBAT ARENA</h2>
-        <p>SELECT DUAL FIGHTERS TO SIMULATE ENGAGEMENT PROFILE</p>
+        <h2><i class="fa-solid fa-crosshairs pulse-slow"></i> TACTICAL BATTLE ARENA</h2>
+        <p>CALIBRATE COMBAT TELEMETRY BETWEEN REGISTERED CHAMPIONS</p>
       </div>
       
       <div class="arena-body">
@@ -298,7 +286,7 @@
             <div class="f-selector-box" id="f1-selector-trigger">
               <div class="f-placeholder" id="f1-placeholder-ui">
                 <i class="fa-solid fa-user-plus plus-glow"></i>
-                <span>SELECT CHAMPION 1</span>
+                <span>LOAD CHAMPION 1</span>
               </div>
               <div class="f-selected-profile hide" id="f1-profile-ui">
                 <div class="f-avatar" id="f1-avatar"></div>
@@ -308,15 +296,15 @@
             </div>
             
             <div class="fighter-telemetry" id="f1-telemetry">
-              <!-- Dynamically injected bars during selection -->
+              <!-- Telemetry -->
             </div>
           </div>
           
-          <!-- Versus Core Indicator -->
+          <!-- Versus Column -->
           <div class="versus-core">
             <div class="vs-badge">VS</div>
-            <button class="battle-execute-btn" id="arena-fight-btn" disabled>ENGAGE SYSTEM</button>
-            <button class="battle-reset-btn hide" id="arena-reset-btn"><i class="fa-solid fa-rotate-left"></i> RE-CALIBRATE</button>
+            <button class="battle-execute-btn" id="arena-fight-btn" disabled>RUN SIMULATION</button>
+            <button class="battle-reset-btn hide" id="arena-reset-btn"><i class="fa-solid fa-rotate-left"></i> RE-SET CHAMBERS</button>
           </div>
           
           <!-- Fighter 2 Panel -->
@@ -324,7 +312,7 @@
             <div class="f-selector-box" id="f2-selector-trigger">
               <div class="f-placeholder" id="f2-placeholder-ui">
                 <i class="fa-solid fa-user-plus plus-glow"></i>
-                <span>SELECT CHAMPION 2</span>
+                <span>LOAD CHAMPION 2</span>
               </div>
               <div class="f-selected-profile hide" id="f2-profile-ui">
                 <div class="f-avatar" id="f2-avatar"></div>
@@ -334,7 +322,7 @@
             </div>
             
             <div class="fighter-telemetry" id="f2-telemetry">
-              <!-- Dynamically injected bars during selection -->
+              <!-- Telemetry -->
             </div>
           </div>
           
@@ -343,11 +331,11 @@
         <!-- Live Combat Arena Screen -->
         <div class="combat-console hide" id="arena-console">
           <div class="console-hud-title">
-            <span><i class="fa-solid fa-terminal"></i> BATTLE COMBAT LOGS</span>
-            <span class="console-status-blip"><span class="pulse-dot green"></span> SIMULATION ACTIVE</span>
+            <span><i class="fa-solid fa-terminal"></i> ARENA SYSTEM AUDIT LOGS</span>
+            <span class="console-status-blip"><span class="pulse-dot green"></span> SIMULATOR ON</span>
           </div>
           <div class="console-logs-window" id="console-logs-window">
-            <!-- Simulated fight output logs dynamically written line by line -->
+            <!-- Simulated logs output -->
           </div>
         </div>
       </div>
@@ -355,16 +343,16 @@
     </div>
   </div>
 
-  <!-- Character Selector Dropdown Modals (Fighter 1 & 2 selection dialog) -->
+  <!-- Character Picker Popup dialog -->
   <div class="modal-overlay selector-dialog-modal" id="fighter-picker-modal">
     <div class="modal-backdrop" id="picker-close-backdrop"></div>
     <div class="picker-panel">
       <div class="picker-header">
-        <h3>SELECT CHAMBER FIGHTER</h3>
+        <h3>CHOOSE METAHUMAN FOR CHAMBER</h3>
         <button class="picker-close-btn" id="picker-close-trigger"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="picker-list" id="picker-list-container">
-        <!-- List of characters with mini-avatars to pick from -->
+        <!-- Pickable rows -->
       </div>
     </div>
   </div>
